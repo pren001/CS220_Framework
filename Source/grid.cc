@@ -53,7 +53,7 @@ Utilities::Grid::Grid(ProblemObject* problem_object) {
           int sink_x = connections.at(i).sink.x;
           int sink_y = connections.at(i).sink.y;
           grid.at(source_y).at(source_x) -> set_cost(-2);
-          grid.at(sink_y).at(sink_x) -> set_cost(-2);
+          grid.at(sink_y).at(sink_x) -> set_cost(-3);
       }
       ///////////////////////////////////////////
 }
