@@ -1,6 +1,7 @@
 #include "../Headers/grid.h"
 #include "../Headers/edge.h"
 #include "../Headers/claim.h"
+#include "../Headers/problem_object.h"
 
 //Takes an x and y coordinate as input and creates a grid of that size filled with default nodes
 Utilities::Grid::Grid(ProblemObject* problem_object) {
@@ -24,21 +25,35 @@ Utilities::Grid::Grid(ProblemObject* problem_object) {
           this->grid.push_back(temp_row);
       }
       
-      //////////////////////////gaidong///////////////////
+      /////////////////////////////////////////////
 
-      vectot<Blocker> blockers = problem_object -> get_blockers();
+      vector<Blocker> blockers = problem_object -> get_blockers();
       int block_num = problem_object -> get_blockers().size();
       for(int i = 0; i< block_num; i++)
       {
       		unsigned int block_width = blockers.at(i).width;
       		unsigned int block_height = blockers.at(i).height;
-      		for( unsigned int h = 0; h < block_height ; h++ )
+      		int block_x = blockers.at(i).location.x;
+      		int block_y = blockers.at(i).location.y;
+      		for( unsigned int h = block_x; h < block_x + block_height ; h++ )
       		{
-      			for(unsigned int w = 0; w < block_width ; w++)
+      			for(unsigned int w = block_y; w < block_y + block_width ; w++)
       			{
       				grid.at(h).at(w) -> set_cost(-1);
       			}
       		}
+      }
+      
+      vector<Connection> source_sink_connections = problem -> get_connections();
+      int connections_num = problem_object -> get_connections().size();
+      for(int i = 0; i < connections ; i++)
+      {
+          int source_x = connections.at(i).source.x;
+          int source_y = connections.at(i).source.y;
+          int sink_x = connections.at(i).sink.x;
+          int sink_y = connections.at(i).sink.y;
+          grid.at(source_y).at(source_x) -> set_cost(-2);
+          grid.at(sink_y).at(sink_x) -> set_cost(-2);
       }
       ///////////////////////////////////////////
 }
