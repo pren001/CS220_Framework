@@ -12,8 +12,8 @@ Utilities::Grid::Grid(ProblemObject* problem_object) {
 	      for(int x = 0; x < width; x++) {
 			  Node* new_node = new Node(x,y);
 			  if (x > 0) {
-				  Edge* west = new Edge(new_node,temp_row.at(temp_row.size()-1));
-				  new_node->add_connection(west);
+				  Edge* east = new Edge(new_node,temp_row.at(temp_row.size()-1));
+				  new_node->add_connection(east);
 			  }
 			  if (y > 0) {
 				  Edge* north = new Edge(new_node,grid.at(y-1).at(x));
@@ -23,6 +23,24 @@ Utilities::Grid::Grid(ProblemObject* problem_object) {
           }
           this->grid.push_back(temp_row);
       }
+      
+      ***************gaidong*****************
+
+      vectot<Blocker> blockers = problem_object -> get_blockers();
+      int block_num = problem_object -> get_blockers().size();
+      for(int i = 0; i< block_num; i++)
+      {
+      		unsigned int block_width = blockers.at(i).width;
+      		unsigned int block_height = blockers.at(i).height;
+      		for( unsigned int h = 0; h < block_height ; h++ )
+      		{
+      			for(unsigned int w = 0; w < block_width ; w++)
+      			{
+      				grid.at(h).at(w) -> set_cost(-1);
+      			}
+      		}
+      }
+      ***************************************
 }
 
 //Destructs the grid by deleting each node individually, the node destructors will delete their own set of edges
