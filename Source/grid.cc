@@ -24,7 +24,7 @@ Utilities::Grid::Grid(ProblemObject* problem_object) {
           this->grid.push_back(temp_row);
       }
       
-      ***************gaidong*****************
+      //////////////////////////gaidong///////////////////
 
       vectot<Blocker> blockers = problem_object -> get_blockers();
       int block_num = problem_object -> get_blockers().size();
@@ -40,7 +40,7 @@ Utilities::Grid::Grid(ProblemObject* problem_object) {
       			}
       		}
       }
-      ***************************************
+      ///////////////////////////////////////////
 }
 
 //Destructs the grid by deleting each node individually, the node destructors will delete their own set of edges
