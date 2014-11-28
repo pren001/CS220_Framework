@@ -46,7 +46,7 @@ Utilities::Grid::Grid(ProblemObject* problem_object) {
       
       vector<Connection> source_sink_connections = problem -> get_connections();
       int connections_num = problem_object -> get_connections().size();
-      for(int i = 0; i < connections ; i++)
+      for(int i = 0; i < connections_num ; i++)
       {
           int source_x = connections.at(i).source.x;
           int source_y = connections.at(i).source.y;
