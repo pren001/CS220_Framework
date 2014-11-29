@@ -215,26 +215,39 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           		if(x+1 >= 0 && x+1 <= width-1)
           		{
           			if(grid.at(y).at(x+1)-> get_cost == d-1)
-          				Point head(x+1 ,y);
+          			{
           				Point tail(x ,y);
+          				x++;
+          				Point head(x ,y);
+          			}
+          				
           		}
           		else if(x-1 >= 0 && x-1 <= width-1)
           		{
           			if(grid.at(y).at(x-1)-> get_cost == d-1)
-          				Point head(x-1 ,y);
+          			{
           				Point tail(x ,y);
+          				x--;
+          				Point head(x ,y);
+          			}
           		}
           		else if(y+1 >= 0 && y+1 <= height-1)
           		{
           			if(grid.at(y+1).at(x)-> get_cost == d-1)
-          				Point head(x ,y+1);
+          			{
           				Point tail(x ,y);
+          				y++;
+          				Point head(x ,y);
+          			}
           		}
           		else if(y-1 >= 0 && y-1 <= height-1)
           		{
           			if(grid.at(y-1).at(x)-> get_cost == d-1)
-          				Point head(x ,y-1);
+          			{
           				Point tail(x ,y);
+          				y--;
+          				Point head(x ,y);
+          			}
           		}
           		PathSegment* path_segment = new PathSegment(head, tail);
           		new_path -> add_segment(path_segment);
