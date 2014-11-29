@@ -232,7 +232,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				x--;
           				Point tail(x ,y);
-          				*path_segment = new PathSegment(head, tail);
+          				*path_segment = PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           		}
@@ -243,7 +243,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				y++;
           				Point tail(x ,y);
-          				*path_segment = new PathSegment(head, tail);
+          				*path_segment = PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           		}
@@ -254,7 +254,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				y--;
           				Point tail(x ,y);
-          				*path_segment = new PathSegment(head, tail);
+          				*path_segment = PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           		}
