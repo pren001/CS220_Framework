@@ -210,6 +210,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           	}
           	int x = sink_x;
           	int y = sink_y;
+          	PathSegment* path_segment;
           	for(int j = 0; j<d ; j++)
           	{
           		if(x+1 >= 0 && x+1 <= width-1)
@@ -219,7 +220,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				x++;
           				Point tail(x ,y);
-          				PathSegment* path_segment = new PathSegment(head, tail);
+          				*path_segment = PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           				
@@ -231,7 +232,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				x--;
           				Point tail(x ,y);
-          				PathSegment* path_segment = new PathSegment(head, tail);
+          				*path_segment = new PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           		}
@@ -242,7 +243,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				y++;
           				Point tail(x ,y);
-          				PathSegment* path_segment = new PathSegment(head, tail);
+          				*path_segment = new PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           		}
@@ -253,7 +254,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				y--;
           				Point tail(x ,y);
-          				PathSegment* path_segment = new PathSegment(head, tail);
+          				*path_segment = new PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           		}
