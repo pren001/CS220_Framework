@@ -216,9 +216,9 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           		{
           			if(grid.at(y).at(x+1)-> get_cost() == d-1)
           			{
-          				Point tail(x ,y);
-          				x++;
           				Point head(x ,y);
+          				x++;
+          				Point tail(x ,y);
           				PathSegment* path_segment = new PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
@@ -228,9 +228,9 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           		{
           			if(grid.at(y).at(x-1)-> get_cost() == d-1)
           			{
-          				Point tail(x ,y);
-          				x--;
           				Point head(x ,y);
+          				x--;
+          				Point tail(x ,y);
           				PathSegment* path_segment = new PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
@@ -239,9 +239,9 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           		{
           			if(grid.at(y+1).at(x)-> get_cost() == d-1)
           			{
-          				Point tail(x ,y);
-          				y++;
           				Point head(x ,y);
+          				y++;
+          				Point tail(x ,y);
           				PathSegment* path_segment = new PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
@@ -250,9 +250,9 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           		{
           			if(grid.at(y-1).at(x)-> get_cost() == d-1)
           			{
-          				Point tail(x ,y);
-          				y--;
           				Point head(x ,y);
+          				y--;
+          				Point tail(x ,y);
           				PathSegment* path_segment = new PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
