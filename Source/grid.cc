@@ -2,6 +2,7 @@
 #include "../Headers/edge.h"
 #include "../Headers/claim.h"
 #include "../Headers/problem_object.h"
+#include "math.h"
 
 //Takes an x and y coordinate as input and creates a grid of that size filled with default nodes
 Utilities::Grid::Grid(ProblemObject* problem_object) {
@@ -44,14 +45,14 @@ Utilities::Grid::Grid(ProblemObject* problem_object) {
       		}
       }
       
-      vector<Connection> source_sink_connections = problem -> get_connections();
-      int connections_num = problem_object -> get_connections().size();
-      for(int i = 0; i < connections_num ; i++)
+      vector<Connection> source_sink_connections = problem_object -> get_connections();
+      num_connections = problem_object -> get_connections().size(); ///////第一题晚上改错了，grid本身有num_connections，不需要额外设
+      for(int i = 0; i < num_connections ; i++)
       {
-          int source_x = connections.at(i).source.x;
-          int source_y = connections.at(i).source.y;
-          int sink_x = connections.at(i).sink.x;
-          int sink_y = connections.at(i).sink.y;
+          int source_x = source_sink_connections.at(i).source.x;
+          int source_y = source_sink_connections.at(i).source.y;
+          int sink_x = source_sink_connections.at(i).sink.x;
+          int sink_y = source_sink_connections.at(i).sink.y;
           grid.at(source_y).at(source_x) -> set_cost(-2);
           grid.at(sink_y).at(sink_x) -> set_cost(-3);
       }
@@ -164,4 +165,47 @@ vector<Path*> Utilities::Grid::test_algorithm() {
       paths.push_back(new_path);
     }
     return paths;
+}
+/////////////////////////////////////
+vector<Path*> Utilities::Grid::Lee_algorithm()
+{
+	vector<Path*> paths;
+	int num_paths = this -> get_num_connections();
+	
+	for(int i = 0; i < num_paths ; i++)
+	{
+		Path* new_path = new Path();
+		int source_x = source_sink_connections.at(i).source.x;
+        	int source_y = source_sink_connections.at(i).source.y;
+          	int sink_x = source_sink_connections.at(i).sink.x;
+          	int sink_y = source_sink_connections.at(i).sink.y;
+          	
+          	int height = this -> get_height();
+          	int width = this -> get_width();
+          	grid.at(source_y).at(source_x) -> set_cost(0);
+          	int d = 0;
+          	bool flag = true;
+          	while(flag)
+          	{
+          		d = d + 1;
+          		for(int j = -d ; j< d; j++)
+          		{
+          			int l = d - abs(j);
+          			if(source_y + l>=0 && source_y + l<= height-1 && source_x + j >=0 && source_x + j <= width -1)
+          			{
+          				if(grid.at(source_y + l).at(source_x + j)-> get_cost() = 0)
+          					grid.at(source_y + l).at(source_x + j) -> set_cost(d);
+          				if(grid.at(source_y + l).at(source_x + j)-> get_cost() = -3)
+          					flag = true;
+          			}
+          			if(source_y - l>=0 && source_y - l<= height-1 && source_x - j >=0 && source_x - j <= width -1)
+          			{
+          				if(grid.at(source_y - l).at(source_x - j)-> get_cost() = 0)
+          					grid.at(source_y - l).at(source_x - j) -> set_cost(d);
+          				if(grid.at(source_y - l).at(source_x - j)-> get_cost() = -3)
+          					flag = true;
+          			}
+          		}
+          	}
+	}
 }
