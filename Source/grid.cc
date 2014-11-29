@@ -167,10 +167,11 @@ vector<Path*> Utilities::Grid::test_algorithm() {
     return paths;
 }
 /////////////////////////////////////
-vector<Path*> Utilities::Grid::Lee_algorithm()
+vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
 {
 	vector<Path*> paths;
 	int num_paths = this -> get_num_connections();
+	vector<Connection> source_sink_connections = problem_object -> get_connections();
 	
 	for(int i = 0; i < num_paths ; i++)
 	{
@@ -196,14 +197,14 @@ vector<Path*> Utilities::Grid::Lee_algorithm()
           				if(grid.at(source_y + l).at(source_x + j)-> get_cost() = 0)
           					grid.at(source_y + l).at(source_x + j) -> set_cost(d);
           				if(grid.at(source_y + l).at(source_x + j)-> get_cost() = -3)
-          					flag = true;
+          					flag = false;
           			}
           			if(source_y - l>=0 && source_y - l<= height-1 && source_x - j >=0 && source_x - j <= width -1)
           			{
           				if(grid.at(source_y - l).at(source_x - j)-> get_cost() = 0)
           					grid.at(source_y - l).at(source_x - j) -> set_cost(d);
           				if(grid.at(source_y - l).at(source_x - j)-> get_cost() = -3)
-          					flag = true;
+          					flag = false;
           			}
           		}
           	}
