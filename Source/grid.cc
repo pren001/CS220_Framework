@@ -214,9 +214,10 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           	for(int j = 0; j<d ; j++)
           	{
           		int d1 = d;
+          		bool move = false
           		if(x+1 >= 0 && x+1 <= width-1)
           		{
-          			if(grid.at(y).at(x+1)-> get_cost() == d1-1)
+          			if(grid.at(y).at(x+1)-> get_cost() == d1-1 )
           			{
           				Point head(x ,y);
           				x++;
@@ -226,10 +227,11 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           			}
           				
           		}
-          		else if(x-1 >= 0 && x-1 <= width-1)
+          		if(x-1 >= 0 && x-1 <= width-1 && !move)
           		{
           			if(grid.at(y).at(x-1)-> get_cost() == d1-1)
           			{
+          				move = true;
           				Point head(x ,y);
           				x--;
           				Point tail(x ,y);
@@ -237,10 +239,11 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				new_path -> add_segment(path_segment);
           			}
           		}
-          		else if(y+1 >= 0 && y+1 <= height-1)
+          		else if(y+1 >= 0 && y+1 <= height-1 && !move)
           		{
           			if(grid.at(y+1).at(x)-> get_cost() == d1-1)
           			{
+          				move = true;
           				Point head(x ,y);
           				y++;
           				Point tail(x ,y);
@@ -248,10 +251,11 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				new_path -> add_segment(path_segment);
           			}
           		}
-          		else if(y-1 >= 0 && y-1 <= height-1)
+          		else if(y-1 >= 0 && y-1 <= height-1 && !move)
           		{
           			if(grid.at(y-1).at(x)-> get_cost() == d1-1)
           			{
+          				move = true;
           				Point head(x ,y);
           				y--;
           				Point tail(x ,y);
