@@ -239,7 +239,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				new_path -> add_segment(path_segment);
           			}
           		}
-          		else if(y+1 >= 0 && y+1 <= height-1 && !move)
+          		if(y+1 >= 0 && y+1 <= height-1 && !move)
           		{
           			if(grid.at(y+1).at(x)-> get_cost() == d1-1)
           			{
@@ -251,7 +251,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				new_path -> add_segment(path_segment);
           			}
           		}
-          		else if(y-1 >= 0 && y-1 <= height-1 && !move)
+          		if(y-1 >= 0 && y-1 <= height-1 && !move)
           		{
           			if(grid.at(y-1).at(x)-> get_cost() == d1-1)
           			{
@@ -267,6 +267,12 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           		
           	}
           	paths.push_back(new_path);
+          	for(int m = 0; m <= height -1 ; m++)
+          		for(int n = 0; n<= width - 1; n++)
+          		{
+          			if(grid.at(m).at(n) -> get_cost != 0 && grid.at(m).at(n) -> get_cost != -1)
+          				grid.at(m).at(n) ->set_cost(0);
+          		}
 	}
 	return paths;
 }
