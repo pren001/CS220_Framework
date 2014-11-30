@@ -2,7 +2,7 @@
 #include "../Headers/edge.h"
 #include "../Headers/claim.h"
 #include "../Headers/problem_object.h"
-#include "math.h"
+#include <math.h>
 
 //Takes an x and y coordinate as input and creates a grid of that size filled with default nodes
 Utilities::Grid::Grid(ProblemObject* problem_object) {
