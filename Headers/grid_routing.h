@@ -5,6 +5,7 @@
 #include "path.h"
 #include "problem_object.h"
 #include <vector>
+#include <iostream>
 
 using std::cerr;
 using std::endl;
