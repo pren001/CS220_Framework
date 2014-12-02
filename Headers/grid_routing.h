@@ -1,5 +1,5 @@
-#ifndef _GRID_ROUTING_H
-#define _GRID_ROUTING_H
+#ifndef _GRID_ROUTING_H_
+#define _GRID_ROUTING_H_
 
 #include "node.h"
 #include "path.h"
@@ -46,4 +46,4 @@ namespace Utilities{
     }
 }
 
-#endif  //_GRID_ROUTING_H
+#endif  //_GRID_ROUTING_H_
