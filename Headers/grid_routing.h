@@ -28,18 +28,21 @@ namespace Utilities{
             grid_routing(ProblemObject* problem_object);
             ~grid_routing();
             
-            void Lee_algorithm1(ProblemObject* problem_object);  /*no intersections*/
-            void Lee_algorithm2ProblemObject* problem_object);   /*ultimate intersections*/
+            void Lee_algorithm1();  /*no intersections*/
+            void Lee_algorithm2();   /*ultimate intersections*/
             
-            void 2bit_Lee1(ProblemObject* problem_object);    /*no intersections*/
-            void 2bit_Lee2(ProblemObject* problem_object);    /*ultimate intersections*/
-            void 3bit_Lee1(ProblemObject* problem_object);    /*no intersections*/
-            void 3bit_Lee2(ProblemObject* problem_object);    /*ultimate intersections*/
+            void 2bit_Lee1();    /*no intersections*/
+            void 2bit_Lee2();    /*ultimate intersections*/
+            void 3bit_Lee1();    /*no intersections*/
+            void 3bit_Lee2();    /*ultimate intersections*/
             
             
-            void Rubin(ProblemObject* problem_object);
-            void Korn(ProblemObject* problem_object);
-            void Hadlock(ProblemObject* problem_object);
+            void Rubin_algorithm1();   /*no intersections*/
+            void Rubin_algorithm2();   /*ultimate intersections*/
+            void Korn_algorithm1();    /*no intersections*/
+            void Korn_algorithm2();    /*ultimate intersections*/
+            void Hadlock_algorithm1();   /*no intersections*/
+            void Hadlock_algorithm2();   /*ultimate intersections*/
     }
 }
 
