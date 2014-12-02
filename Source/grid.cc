@@ -180,7 +180,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
         	int source_y = source_sink_connections.at(i).source.y;
           	int sink_x = source_sink_connections.at(i).sink.x;
           	int sink_y = source_sink_connections.at(i).sink.y;
-          	
+          
           	int height = this -> get_height();
           	int width = this -> get_width();
           	//grid.at(source_y).at(source_x) -> set_cost(0);
@@ -210,7 +210,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           	}
           	int x = sink_x;
           	int y = sink_y;
-          	PathSegment* path_segment;
+      
           	for(int j = 0; j<d ; j++)
           	{
           		int d1 = d;
@@ -222,7 +222,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				x++;
           				Point tail(x ,y);
-          				*path_segment = PathSegment(head, tail);
+          				PathSegment *path_segment = PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           				
@@ -235,7 +235,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				x--;
           				Point tail(x ,y);
-          				*path_segment = PathSegment(head, tail);
+          				PathSegment *path_segment = PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           		}
@@ -247,7 +247,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				y++;
           				Point tail(x ,y);
-          				*path_segment = PathSegment(head, tail);
+          				PathSegment *path_segment = PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           		}
@@ -259,13 +259,17 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           				Point head(x ,y);
           				y--;
           				Point tail(x ,y);
-          				*path_segment = PathSegment(head, tail);
+          				PathSegment *path_segment = PathSegment(head, tail);
           				new_path -> add_segment(path_segment);
           			}
           		}
           		d1--;
           		
           	}
+          	////////////for the version needs no intersections
+          	
+          	
+          	///////////////////////////////
           	paths.push_back(new_path);
           	for(int m = 0; m <= height -1 ; m++)
           		for(int n = 0; n<= width - 1; n++)
@@ -273,6 +277,8 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           			if(grid.at(m).at(n) -> get_cost != 0 && grid.at(m).at(n) -> get_cost != -1)
           				grid.at(m).at(n) ->set_cost(0);
           		}
+          	///////////////////////////////
+          		
 	}
 	return paths;
 }
