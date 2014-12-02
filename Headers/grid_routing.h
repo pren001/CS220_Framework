@@ -18,6 +18,7 @@ namespace Utilities{
         private:
             vector<vector<Node*> > grid;
             int num_connections;
+            ProblemObject *problem_object;
             vector<Path*> paths;
             
             void print();
