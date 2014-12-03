@@ -16,14 +16,14 @@ Utilities::grid_routing::~grid_routing(){
 }
 
 
-Utilities::grid_routing::Lee_algorithm1();              /* no intersections */
+Utilities::grid_routing::Lee_algorithm1()             /* no intersections */
 {
         map_Lee *map_Lee = new map_Lee(problem_object);
         paths = map_Lee -> Lee1();
         map_Lee ->print();
 }
 
-Utilities::grid_routing::Lee_algorithm2();
+Utilities::grid_routing::Lee_algorithm2()        /* unlimited intersections */
 {
         map_Lee *map_Lee = new map_Lee(problem_object);
         paths = map_Lee -> Lee2();
