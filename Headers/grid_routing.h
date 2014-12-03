@@ -29,20 +29,22 @@ namespace Utilities{
             ~grid_routing();
             
             void Lee_algorithm1();  /*no intersections*/
-            void Lee_algorithm2();   /*ultimate intersections*/
+            void Lee_algorithm2();   /*unlimited intersections*/
             
             void 2bit_Lee1();    /*no intersections*/
-            void 2bit_Lee2();    /*ultimate intersections*/
+            void 2bit_Lee2();    /*unlimited intersections*/
             void 3bit_Lee1();    /*no intersections*/
-            void 3bit_Lee2();    /*ultimate intersections*/
+            void 3bit_Lee2();    /*unlimited intersections*/
             
             
             void Rubin_algorithm1();   /*no intersections*/
-            void Rubin_algorithm2();   /*ultimate intersections*/
+            void Rubin_algorithm2();   /*unlimited intersections*/
+            
             void Korn_algorithm1();    /*no intersections*/
-            void Korn_algorithm2();    /*ultimate intersections*/
+            void Korn_algorithm2();    /*unlimited intersections*/
+            
             void Hadlock_algorithm1();   /*no intersections*/
-            void Hadlock_algorithm2();   /*ultimate intersections*/
+            void Hadlock_algorithm2();   /*unlimited intersections*/
     }
 }
 
