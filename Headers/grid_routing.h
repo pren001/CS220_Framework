@@ -28,7 +28,7 @@ namespace Utilities{
             grid_routing(ProblemObject* problem_object);
             ~grid_routing();
             
-            void set_map();
+            void initialize_map();
             
             void Lee_algorithm1();  /*no intersections*/
             void Lee_algorithm2();   /*unlimited intersections*/
