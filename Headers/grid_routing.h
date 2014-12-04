@@ -14,7 +14,7 @@ using Utilities::Node;
 using Utilities::Path;
 
 namespace Utilities{
-    Class grid_routing {
+    class grid_routing {
         private:
             vector<vector<Node*> > grid;
             int num_connections;
@@ -48,6 +48,6 @@ namespace Utilities{
             void Hadlock_algorithm1();   /*no intersections*/
             void Hadlock_algorithm2();   /*unlimited intersections*/
     }
-}
+};
 
 #endif  //_GRID_ROUTING_H_
