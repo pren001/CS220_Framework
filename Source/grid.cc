@@ -194,16 +194,16 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           			int l = d - abs(j);
           			if(source_y + l>=0 && source_y + l<= height-1 && source_x + j >=0 && source_x + j <= width -1)
           			{
-          				if(grid.at(source_y + l).at(source_x + j)-> get_cost() = 0)
+          				if(grid.at(source_y + l).at(source_x + j)-> get_cost() == 0)
           					grid.at(source_y + l).at(source_x + j) -> set_cost(d);
-          				if(grid.at(source_y + l).at(source_x + j)-> get_cost() = -3)
+          				if(grid.at(source_y + l).at(source_x + j)-> get_cost() == -3)
           					flag = false;
           			}
           			if(source_y - l>=0 && source_y - l<= height-1 && source_x - j >=0 && source_x - j <= width -1)
           			{
-          				if(grid.at(source_y - l).at(source_x - j)-> get_cost() = 0)
+          				if(grid.at(source_y - l).at(source_x - j)-> get_cost() == 0)
           					grid.at(source_y - l).at(source_x - j) -> set_cost(d);
-          				if(grid.at(source_y - l).at(source_x - j)-> get_cost() = -3)
+          				if(grid.at(source_y - l).at(source_x - j)-> get_cost() == -3)
           					flag = false;
           			}
           		}
@@ -214,7 +214,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           	for(int j = 0; j<d ; j++)
           	{
           		int d1 = d;
-          		bool move = false
+          		bool move = false;
           		if(x+1 >= 0 && x+1 <= width-1)
           		{
           			if(grid.at(y).at(x+1)-> get_cost() == d1-1 )
