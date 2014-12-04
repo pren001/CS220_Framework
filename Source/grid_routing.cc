@@ -65,7 +65,7 @@ void Utilities::grid_routing::initialize_map()    /* initialzie the map with blo
       		}
       }
       
-
+      /*
 	//SOURCE & SINK LABEL START HERE
       vector<Connection> source_sink_connections = problem_object -> get_connections();
       int connections_num = problem_object -> get_connections().size();
@@ -84,6 +84,7 @@ void Utilities::grid_routing::initialize_map()    /* initialzie the map with blo
       }
    
       //SOURCE & SINK LABEL END HERE
+      */
 }
 
 
@@ -110,7 +111,14 @@ void Utilities::grid_routing::Lee_algorithm1()             /* no intersections *
         int sink_y = source_sink_connections.at(i).sink.y;
         int height = problem_object->get_height();                     //////////////////////*要改  *////////////
         int width = problem_object->get_width();                       //////////////////////*要改  *////////////
-        grid.at(source_y).at(source_x) -> set_cost(0);     // COST AT SOURCE=0
+        
+        if(source_x >= 0 && source_x < width && source_y >= 0 && source_y < height && sink_x >= 0 && sink_x < width && sink_y >= 0 && sink_y < height)
+            {
+                  grid.at(source_y).at(source_x) -> set_cost(0); //LABEL NODE AS COST=-2 WHEN THE NODE IS IN A SOURCE
+                  grid.at(sink_y).at(sink_x) -> set_cost(-3); //LABEL NODE AS COST=-3 WHEN THE NODE IS IN A SINK
+	         
+            }
+        //grid.at(source_y).at(source_x) -> set_cost(0);     // COST AT SOURCE=0
         int distance = 0;     // STEPS FROM SOURCE
         
         // EXPANSION STARTS HERE
