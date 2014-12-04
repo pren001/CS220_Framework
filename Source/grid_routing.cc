@@ -7,7 +7,7 @@
 using Utilities::map_Lee;
 using Utilities::map_Rubin;
 
-void Utilities::grid_routing::set_map();
+void Utilities::grid_routing::initialize_map();
 {
       this->num_connections = problem_object->get_connections().size();
       int height = problem_object->get_height();
@@ -41,7 +41,7 @@ void Utilities::grid_routing::set_map();
       		{
       			for(unsigned int w = block_y; w < block_y + block_width ; w++)
       			{
-      				grid.at(h).at(w) -> set_cost(-1);
+      				if(h>=0 &&h<height && w>=0 && w<width) grid.at(h).at(w) -> set_cost(-1);
       			}
       		}
       }
@@ -54,8 +54,11 @@ void Utilities::grid_routing::set_map();
           int source_y = source_sink_connections.at(i).source.y;
           int sink_x = source_sink_connections.at(i).sink.x;
           int sink_y = source_sink_connections.at(i).sink.y;
-          grid.at(source_y).at(source_x) -> set_cost(-2);
-          grid.at(sink_y).at(sink_x) -> set_cost(-3);
+          if(source_x>=0 && source_x<width && source_y >=0 && source_y<height && sink_x>=0 &&sink_x<width && sink_y>=0&&sink_y<height)
+          {
+          	grid.at(source_y).at(source_x) -> set_cost(-2);
+          	grid.at(sink_y).at(sink_x) -> set_cost(-3);
+          }
       }
 }
 
