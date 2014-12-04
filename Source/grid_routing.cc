@@ -2,6 +2,7 @@
 #include "../Headers/edge.h"
 #include "../Headers/claim.h"
 #include "../Headers/problem_object.h"
+#include "../Headers/grid_routing.h"
 #include <math.h>
 
 
