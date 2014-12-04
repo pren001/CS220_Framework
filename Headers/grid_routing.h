@@ -33,10 +33,10 @@ namespace Utilities{
             void Lee_algorithm1();  /*no intersections*/
             void Lee_algorithm2();   /*unlimited intersections*/
             
-            void 2bit_Lee1();    /*no intersections*/
-            void 2bit_Lee2();    /*unlimited intersections*/
-            void 3bit_Lee1();    /*no intersections*/
-            void 3bit_Lee2();    /*unlimited intersections*/
+            //void 2bit_Lee1();    /*no intersections*/
+            //void 2bit_Lee2();    /*unlimited intersections*/
+            //void 3bit_Lee1();    /*no intersections*/
+            //void 3bit_Lee2();    /*unlimited intersections*/
             
             
             void Rubin_algorithm1();   /*no intersections*/
@@ -47,7 +47,7 @@ namespace Utilities{
             
             void Hadlock_algorithm1();   /*no intersections*/
             void Hadlock_algorithm2();   /*unlimited intersections*/
-    }
-};
+    };
+}
 
 #endif  //_GRID_ROUTING_H_
