@@ -5,7 +5,8 @@
 #include <math.h>
 
 //Takes an x and y coordinate as input and creates a grid of that size filled with default nodes
-Utilities::Grid::Grid(ProblemObject* problem_object) {
+Utilities::Grid::Grid() {
+	/*
       this->num_connections = problem_object->get_connections().size();
       int height = problem_object->get_height();
       int width = problem_object->get_width();
@@ -57,6 +58,7 @@ Utilities::Grid::Grid(ProblemObject* problem_object) {
           grid.at(sink_y).at(sink_x) -> set_cost(-3);
       }
       ///////////////////////////////////////////
+	*/
 }
 
 //Destructs the grid by deleting each node individually, the node destructors will delete their own set of edges

@@ -42,10 +42,13 @@ int main(int argc,char* argv[]) {
 	
 	
 	g.Lee_algorithm1();
-	/*
-	vector<Path*> paths = g.test_algorithm();
 
+	
+	
+	//vector<Path*> paths = g.test_algorithm();
+	
 	//Print the paths/netlists that you return from your algorithm
+	/*
 	for(unsigned i = 0; i < paths.size(); i++) {
 		cout << "Path " << i << ": ";
 		paths.at(i)->print();
@@ -55,6 +58,7 @@ int main(int argc,char* argv[]) {
 
 	paths.clear();
 	*/
+	
 
 	delete first_problem;
 

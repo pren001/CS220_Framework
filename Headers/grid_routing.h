@@ -20,8 +20,9 @@ namespace Utilities{
             int num_connections;
             ProblemObject *problem_object;
             vector<Path*> paths;
-            
+	
             void print();
+            
             
         public:
             /* Constructors/Destructors */
@@ -47,6 +48,8 @@ namespace Utilities{
             
             void Hadlock_algorithm1();   /*no intersections*/
             void Hadlock_algorithm2();   /*unlimited intersections*/
+
+	    
     };
 }
 

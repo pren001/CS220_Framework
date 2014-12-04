@@ -21,7 +21,7 @@ namespace Utilities {
 
         public:
             /* Constructors/Destructors */
-            Grid(ProblemObject* problem_object);
+            Grid();
             ~Grid();
 
             /* Accessors */
