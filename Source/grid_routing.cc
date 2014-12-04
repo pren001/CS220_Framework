@@ -53,6 +53,13 @@ void Utilities::grid_routing::grid_routing(ProblemObject* problem_object)
 }
 
 void Utilities::grid_routing::~grid_routing(){
+      int width = this->get_width();
+      int height = this->get_height();
+      for(int x = 0; x < width; x++) {
+            for(int y = 0; y < width; y++) {
+                  delete grid.at(y).at(x);
+            }
+      }
 }
 
 
