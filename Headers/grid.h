@@ -42,6 +42,7 @@ namespace Utilities {
 
             /* Algorithms */
             vector<Path*> test_algorithm();
+            vector<Path*> Lee_algorithm(ProblemObject* problem_object);
     };
 }
 
