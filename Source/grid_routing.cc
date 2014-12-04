@@ -230,8 +230,8 @@ void Utilities::grid_routing::print()
         
 	if(paths.empty())
         {
-                //std::cout << "There is no path.";
-                //return;
+                std::cout << "There is no path.";
+                return;
         }
 	
         for(unsigned i = 0; i < paths.size(); i++) {
