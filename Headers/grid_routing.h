@@ -14,7 +14,7 @@ using Utilities::Node;
 using Utilities::Path;
 
 namespace Utilities{
-    class grid_routing {
+    class grid_routing : public Grid{
         private:
             vector<vector<Node*> > grid;
             int num_connections;
