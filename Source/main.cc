@@ -1,6 +1,7 @@
 
 #include "../Headers/grid.h"
 #include "../Headers/problem_object.h"
+#include "../Headers/grid_routing.h"
 #include <time.h>
 #include <cstdlib>
 #include <iostream>
@@ -20,7 +21,7 @@ int main(int argc,char* argv[]) {
 	// EDIT FROM HERE DOWN
 
 	//Create your problem map object (in our example, we use a simple grid, you should create your own)
-	Utilities::Grid g(first_problem);
+	Utilities::grid_routing g(first_problem);
 
 	/*
 	Note: we do not take into account the connections or blockers that exist in the Project Object
@@ -36,6 +37,12 @@ int main(int argc,char* argv[]) {
 	Path: a series of straight line segments, with a single source and a single sink
 	Netlist: a series of stright line segments, with a single source and more than one sink
 	*/
+	
+	
+	
+	
+	g.Lee_algorithm1();
+	/*
 	vector<Path*> paths = g.test_algorithm();
 
 	//Print the paths/netlists that you return from your algorithm
@@ -47,6 +54,7 @@ int main(int argc,char* argv[]) {
 	}
 
 	paths.clear();
+	*/
 
 	delete first_problem;
 
