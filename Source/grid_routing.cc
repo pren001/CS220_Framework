@@ -87,16 +87,16 @@ void Utilities::grid_routing::Lee_algorithm1()             /* no intersections *
                 int l = distance - abs(j);
                 if(source_y + l>=0 && source_y + l<= height-1 && source_x + j >=0 && source_x + j <= width -1)
                 {
-                    if(grid.at(source_y + l).at(source_x + j)-> get_cost() = 0)     //FOUND EMPTY NODE
+                    if(grid.at(source_y + l).at(source_x + j)-> get_cost() == 0)     //FOUND EMPTY NODE
                         grid.at(source_y + l).at(source_x + j) -> set_cost(distance);      //SET COST
-                    if(grid.at(source_y + l).at(source_x + j)-> get_cost() = -3)    //STOP WHEN SINK IS REACHED
+                    if(grid.at(source_y + l).at(source_x + j)-> get_cost() == -3)    //STOP WHEN SINK IS REACHED
                         flag = false;
                 }
                 if(source_y - l>=0 && source_y - l<= height-1 && source_x - j >=0 && source_x - j <= width -1)
                 {
-                    if(grid.at(source_y - l).at(source_x - j)-> get_cost() = 0)     //FOUND EMPTY NODE
+                    if(grid.at(source_y - l).at(source_x - j)-> get_cost() == 0)     //FOUND EMPTY NODE
                         grid.at(source_y - l).at(source_x - j) -> set_cost(distance);      //SET COST
-                    if(grid.at(source_y - l).at(source_x - j)-> get_cost() = -3)    //STOP WHEN SINK IS REACHED
+                    if(grid.at(source_y - l).at(source_x - j)-> get_cost() == -3)    //STOP WHEN SINK IS REACHED
                         flag = false;
                 }
             }
@@ -108,7 +108,7 @@ void Utilities::grid_routing::Lee_algorithm1()             /* no intersections *
         int y = sink_y;
         for(int step = distance; step > 0 ; step--)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
 	{
-	    bool move = false;     // WHENEVER MAKE A MOVE
+	    bool move = false;    // WHENEVER MAKE A MOVE
 	    
 	    if(x+1 >= 0 && x+1 <= width-1)     // RIGHT STEP IS NOT OUT OF RANGE
 	    {
