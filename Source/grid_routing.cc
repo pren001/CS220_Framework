@@ -12,8 +12,8 @@ Utilities::grid_routing::grid_routing(ProblemObject* problem_object)
 }
 
 Utilities::grid_routing::~grid_routing(){
-      int width = this->get_width();
-      int height = this->get_height();
+      int width = Grid::get_width();
+      int height = Grid::get_height();
       for(int x = 0; x < width; x++) {
             for(int y = 0; y < width; y++) {
                   delete grid.at(y).at(x);
@@ -26,8 +26,8 @@ Utilities::grid_routing::~grid_routing(){
 void Utilities::grid_routing::initialize_map()    /* initialzie the map with block */
 {
       this->num_connections = problem_object->get_connections().size();
-      int height = problem_object->get_height();
-      int width = problem_object->get_width();
+      int height = Grid::get_height();
+      int width = Grid::get_width();
       for(int y = 0; y < height; y++) {
 		  vector<Node*> temp_row;
 	      for(int x = 0; x < width; x++) {
@@ -57,7 +57,7 @@ void Utilities::grid_routing::initialize_map()    /* initialzie the map with blo
       		{
       			for(unsigned int w = block_y; w < block_y + block_width ; w++)
       			{
-      				if(h>=0 &&h<height && w>=0 && w<width) grid.at(h).at(w) -> set_cost(-1);
+      				if(h<height&& w<width) grid.at(h).at(w) -> set_cost(-1);
       			}
       		}
       }
@@ -75,7 +75,7 @@ void Utilities::grid_routing::Lee_algorithm1()             /* no intersections *
     initialize_map();
     vector<Path*> paths;
     vector<Connection> source_sink_connections = this->problem_object -> get_connections();
-    int num_paths = get_num_connections();
+    int num_paths = Grid::get_num_connections();
     for(int i = 0; i < num_paths ; i++)
     {
         Path* new_path = new Path();
@@ -83,8 +83,8 @@ void Utilities::grid_routing::Lee_algorithm1()             /* no intersections *
         int source_y = source_sink_connections.at(i).source.y;
         int sink_x = source_sink_connections.at(i).sink.x;
         int sink_y = source_sink_connections.at(i).sink.y;
-        int height = get_height();
-        int width = get_width();
+        int height = Grid::get_height();
+        int width = Grid::get_width();
         //grid.at(source_y).at(source_x) -> set_cost(0);     // COST AT SOURCE=0
         int distance = 0;     // STEPS FROM SOURCE
         
