@@ -4,10 +4,9 @@
 #include "../Headers/problem_object.h"
 #include <math.h>
 
-using Utilities::map_Lee;
-using Utilities::map_Rubin;
 
-void Utilities::grid_routing::initialize_map();
+
+void Utilities::grid_routing::initialize_map()    /* initialzie the map with block */
 {
       this->num_connections = problem_object->get_connections().size();
       int height = problem_object->get_height();
@@ -15,7 +14,7 @@ void Utilities::grid_routing::initialize_map();
       for(int y = 0; y < height; y++) {
 		  vector<Node*> temp_row;
 	      for(int x = 0; x < width; x++) {
-			  Node* new_node = new Node(x,y);
+			  Node* new_node = new Node(x,y,0);
 			  if (x > 0) {
 				  Edge* east = new Edge(new_node,temp_row.at(temp_row.size()-1));
 				  new_node->add_connection(east);
@@ -45,21 +44,6 @@ void Utilities::grid_routing::initialize_map();
       			}
       		}
       }
-      
-      vector<Connection> source_sink_connections = this->problem_object -> get_connections();
-      num_connections = problem_object -> get_connections().size(); ///////第一题晚上改错了，grid本身有num_connections，不需要额外设
-      for(int i = 0; i < num_connections ; i++)
-      {
-          int source_x = source_sink_connections.at(i).source.x;
-          int source_y = source_sink_connections.at(i).source.y;
-          int sink_x = source_sink_connections.at(i).sink.x;
-          int sink_y = source_sink_connections.at(i).sink.y;
-          if(source_x>=0 && source_x<width && source_y >=0 && source_y<height && sink_x>=0 &&sink_x<width && sink_y>=0&&sink_y<height)
-          {
-          	grid.at(source_y).at(source_x) -> set_cost(-2);
-          	grid.at(sink_y).at(sink_x) -> set_cost(-3);
-          }
-      }
 }
 
 
@@ -72,18 +56,125 @@ void Utilities::grid_routing::~grid_routing(){
 }
 
 
+
+
+
 void Utilities::grid_routing::Lee_algorithm1()             /* no intersections */
 {
-        map_Lee *map_Lee = new map_Lee(problem_object);
-        paths = map_Lee -> Lee1();
-        map_Lee ->print();
+    initialize_map();
+    vector<Path*> paths;
+    vector<Connection> source_sink_connections = this->problem_object -> get_connections();
+    int num_paths = this -> get_num_connections();
+    for(int i = 0; i < num_paths ; i++)
+    {
+        Path* new_path = new Path();
+        int source_x = source_sink_connections.at(i).source.x;
+        int source_y = source_sink_connections.at(i).source.y;
+        int sink_x = source_sink_connections.at(i).sink.x;
+        int sink_y = source_sink_connections.at(i).sink.y;
+        int height = this -> get_height();
+        int width = this -> get_width();
+        //grid.at(source_y).at(source_x) -> set_cost(0);     // COST AT SOURCE=0
+        int distance = 0;     // STEPS FROM SOURCE
+        
+        // EXPANSION STARTS HERE
+        bool flag = true;     // FLAG = FALSE WHEN SINK IS REACHED
+        while(flag)
+        {
+            distance = distance + 1;
+            for(int j = -distance ; j< distance; j++)
+            {
+                int l = distance - abs(j);
+                if(source_y + l>=0 && source_y + l<= height-1 && source_x + j >=0 && source_x + j <= width -1)
+                {
+                    if(grid.at(source_y + l).at(source_x + j)-> get_cost() = 0)     //FOUND EMPTY NODE
+                        grid.at(source_y + l).at(source_x + j) -> set_cost(distance);      //SET COST
+                    if(grid.at(source_y + l).at(source_x + j)-> get_cost() = -3)    //STOP WHEN SINK IS REACHED
+                        flag = false;
+                }
+                if(source_y - l>=0 && source_y - l<= height-1 && source_x - j >=0 && source_x - j <= width -1)
+                {
+                    if(grid.at(source_y - l).at(source_x - j)-> get_cost() = 0)     //FOUND EMPTY NODE
+                        grid.at(source_y - l).at(source_x - j) -> set_cost(distance);      //SET COST
+                    if(grid.at(source_y - l).at(source_x - j)-> get_cost() = -3)    //STOP WHEN SINK IS REACHED
+                        flag = false;
+                }
+            }
+        }
+        // EXPANSION ENDS HERE
+        
+        // BACKTRACING STARTS HERE
+        int x = sink_x;
+        int y = sink_y;
+        for(int step = distance; step > 0 ; step--)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
+	{
+	    bool move = false;     // WHENEVER MAKE A MOVE
+	    
+	    if(x+1 >= 0 && x+1 <= width-1)     // RIGHT STEP IS NOT OUT OF RANGE
+	    {
+	        if(grid.at(y).at(x+1)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
+	        {
+	            Point head(x ,y);
+                    x++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+	        }
+	    }
+
+	    if(x-1 >= 0 && x-1 <= width-1 && !move)     // LEFT STEP IS NOT OUT OF RANGE
+	    {
+	        if(grid.at(y).at(x-1)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
+	        {
+	            Point head(x ,y);
+	            x--;
+	            Point tail(x ,y);
+	            move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+	            PathSegment* path_segment = new PathSegment(head, tail);
+	            new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+	        }
+	    }
+
+	    if(y+1 >= 0 && y+1 <= height-1 && !move)     // UP STEP IS NOT OUT OF RANGE
+	    {
+	        if(grid.at(y+1).at(x)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
+	        {
+	            Point head(x ,y);
+	            y++;
+	            Point tail(x ,y);
+	            move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+	            PathSegment* path_segment = new PathSegment(head, tail);
+	            new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+	        }
+	    }
+		
+	    if(y-1 >= 0 && y-1 <= height-1 && !move)     // DOWN STEP IS NOT OUT OF RANGE
+	    {
+	        if(grid.at(y-1).at(x)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
+	        {
+	            Point head(x ,y);
+	            y--;
+	            Point tail(x ,y);
+	            move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+	            PathSegment* path_segment = new PathSegment(head, tail);
+	            new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+	        }
+	    }
+	}
+	// BACK TRACING ENDS HERE
+	
+        paths.push_back(new_path);
+    }
+    print();
 }
+
+
+
 
 void Utilities::grid_routing::Lee_algorithm2()        /* unlimited intersections */
 {
-        map_Lee *map_Lee = new map_Lee(problem_object);
-        paths = map_Lee -> Lee2();
-        map_Lee ->print();
+        
 }
 
 void Utilities::grid_routing::Rubin_algorithm1()
