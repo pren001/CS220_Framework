@@ -6,6 +6,22 @@
 #include <math.h>
 
 
+Utilities::grid_routing::grid_routing(ProblemObject* problem_object)
+{
+        this->problem_object = problem_object;
+}
+
+Utilities::grid_routing::~grid_routing(){
+      int width = this->get_width();
+      int height = this->get_height();
+      for(int x = 0; x < width; x++) {
+            for(int y = 0; y < width; y++) {
+                  delete grid.at(y).at(x);
+            }
+      }
+}
+
+
 
 void Utilities::grid_routing::initialize_map()    /* initialzie the map with block */
 {
@@ -48,20 +64,7 @@ void Utilities::grid_routing::initialize_map()    /* initialzie the map with blo
 }
 
 
-void Utilities::grid_routing::grid_routing(ProblemObject* problem_object)
-{
-        this ->problem_object = problem_object;
-}
 
-void Utilities::grid_routing::~grid_routing(){
-      int width = this->get_width();
-      int height = this->get_height();
-      for(int x = 0; x < width; x++) {
-            for(int y = 0; y < width; y++) {
-                  delete grid.at(y).at(x);
-            }
-      }
-}
 
 
 
@@ -72,7 +75,7 @@ void Utilities::grid_routing::Lee_algorithm1()             /* no intersections *
     initialize_map();
     vector<Path*> paths;
     vector<Connection> source_sink_connections = this->problem_object -> get_connections();
-    int num_paths = this -> get_num_connections();
+    int num_paths = get_num_connections();
     for(int i = 0; i < num_paths ; i++)
     {
         Path* new_path = new Path();
@@ -80,8 +83,8 @@ void Utilities::grid_routing::Lee_algorithm1()             /* no intersections *
         int source_y = source_sink_connections.at(i).source.y;
         int sink_x = source_sink_connections.at(i).sink.x;
         int sink_y = source_sink_connections.at(i).sink.y;
-        int height = this -> get_height();
-        int width = this -> get_width();
+        int height = get_height();
+        int width = get_width();
         //grid.at(source_y).at(source_x) -> set_cost(0);     // COST AT SOURCE=0
         int distance = 0;     // STEPS FROM SOURCE
         
@@ -189,15 +192,15 @@ void Utilities::grid_routing::Rubin_algorithm1()
 {
 }
 
-void Utilities::gird_routing::print()
+void Utilities::grid_routing::print()
 {
         if(paths.empty())
         {
-                std::cout << "There is no path."
+                std::cout << "There is no path.";
                 return;
         }
         for(unsigned i = 0; i < paths.size(); i++) {
-		cout << "Path " << i << ": ";
+		std::cout << "Path " << i << ": ";
 		paths.at(i)->print();
 		Path* temp = paths.at(i);
 		delete temp;
