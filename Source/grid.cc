@@ -274,7 +274,7 @@ vector<Path*> Utilities::Grid::Lee_algorithm(ProblemObject* problem_object)
           	for(int m = 0; m <= height -1 ; m++)
           		for(int n = 0; n<= width - 1; n++)
           		{
-          			if(grid.at(m).at(n) -> get_cost != 0 && grid.at(m).at(n) -> get_cost != -1)
+          			if(grid.at(m).at(n) -> get_cost() != 0 && grid.at(m).at(n) -> get_cost() != -1)
           				grid.at(m).at(n) ->set_cost(0);
           		}
           	///////////////////////////////
