@@ -39,8 +39,8 @@ namespace Utilities{
             void There_bit1();    /*unlimited intersections*/
             
             
-            //void Rubin_algorithm1();   /*no intersections*/
-            //void Rubin_algorithm2();   /*unlimited intersections*/
+            void Rubin1();   /*unlimited intersections*/
+            
             
             //void Korn_algorithm1();    /*no intersections*/
             //void Korn_algorithm2();    /*unlimited intersections*/

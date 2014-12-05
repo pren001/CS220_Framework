@@ -39,9 +39,10 @@ int main(int argc,char* argv[]) {
 	*/
 	
 	
-	
-	
+	g.Lee_algorithm1();
+	g.Two_bit1();
 	g.There_bit1();
+	g.Rubin1();
 
 	
 	
