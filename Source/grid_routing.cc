@@ -56,9 +56,9 @@ void Utilities::grid_routing::initialize_map()    /* initialzie the map with blo
       		unsigned int block_height = blockers.at(i).height;
       		int block_x = blockers.at(i).location.x;
       		int block_y = blockers.at(i).location.y;
-      		for( unsigned int h = block_x; h < block_x + block_height ; h++ )
+      		for( unsigned int h = block_y; h < block_y + block_height ; h++ )
       		{
-      			for(unsigned int w = block_y; w < block_y + block_width ; w++)
+      			for(unsigned int w = block_x; w < block_x+ block_width ; w++)
       			{
       				if(h<height&& w<width) grid.at(h).at(w) -> set_cost(-1);
       			}
