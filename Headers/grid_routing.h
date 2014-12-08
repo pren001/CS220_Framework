@@ -45,7 +45,7 @@ namespace Utilities{
             //void Korn_algorithm1();    /*no intersections*/
             //void Korn_algorithm2();    /*unlimited intersections*/
             
-            //void Hadlock_algorithm1();   /*no intersections*/
+            void Hadlock1();   /*no intersections*/
             //void Hadlock_algorithm2();   /*unlimited intersections*/
 
 	    

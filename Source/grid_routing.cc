@@ -4,6 +4,9 @@
 #include "../Headers/problem_object.h"
 #include "../Headers/grid_routing.h"
 #include <math.h>
+#include <algorithm>
+#include <vector>
+#include <queue>
 
 
 Utilities::grid_routing::grid_routing(ProblemObject* problem_object)
@@ -30,11 +33,13 @@ void Utilities::grid_routing::initialize_map()    /* initialzie the map with blo
       
       int height = problem_object->get_height();
       int width = problem_object ->get_width();
+    
       for(int y = 0; y < height; y++) {
 		  vector<Node*> temp_row;
 	      for(int x = 0; x < width; x++) {
 			  Node* new_node = new Node(x,y,0);
-			  if (x > 0) {
+			  /*
+              if (x > 0) {
 				  Edge* east = new Edge(new_node,temp_row.at(temp_row.size()-1));
 				  new_node->add_connection(east);
 			  }
@@ -42,10 +47,13 @@ void Utilities::grid_routing::initialize_map()    /* initialzie the map with blo
 				  Edge* north = new Edge(new_node,grid.at(y-1).at(x));
 				  new_node->add_connection(north);
 			  }
+               */
 			  temp_row.push_back(new_node);
           }
           this->grid.push_back(temp_row);
       }
+    
+    
 	
       
       vector<Blocker> blockers = problem_object -> get_blockers();
@@ -56,14 +64,24 @@ void Utilities::grid_routing::initialize_map()    /* initialzie the map with blo
       		unsigned int block_height = blockers.at(i).height;
       		int block_x = blockers.at(i).location.x;
       		int block_y = blockers.at(i).location.y;
-      		for( unsigned int h = block_x; h < block_x + block_height ; h++ )
+      		for( unsigned int h = block_y; h < block_y + block_height ; h++ )
       		{
-      			for(unsigned int w = block_y; w < block_y + block_width ; w++)
+      			for(unsigned int w = block_x; w < block_x + block_width ; w++)
       			{
       				if(h<height&& w<width) grid.at(h).at(w) -> set_cost(-1);
       			}
       		}
       }
+	/*
+     for(int m = height -1; m>=0; m--)
+         for(int n = 0; n<width; n++ )
+         {
+             if(n == width -1)
+                 std::cout << grid.at(m).at(n)->get_cost()<< std::endl;
+             else
+                 std::cout << grid.at(m).at(n)->get_cost()<< " ";
+         }
+      */
       
       /*
 	//SOURCE & SINK LABEL START HERE
@@ -104,6 +122,7 @@ void Utilities::grid_routing::Lee_algorithm1()
     
     for(int i = 0; i < num_paths ; i++)
     {
+        vector< std::queue<Node*> > nodes_queue;
         Path* new_path = new Path();
         int source_x = source_sink_connections.at(i).source.x;
         int source_y = source_sink_connections.at(i).source.y;
@@ -119,15 +138,20 @@ void Utilities::grid_routing::Lee_algorithm1()
 	         
             }
         //grid.at(source_y).at(source_x) -> set_cost(0);     // COST AT SOURCE=0
-        int distance = 0;     // STEPS FROM SOURCE
+        int distance;     // STEPS FROM SOURCE
         
         // EXPANSION STARTS HERE
         bool flag = true;     // FLAG = FALSE WHEN SINK IS REACHED
         
-	
+        int x = source_x;
+        int y = source_y;
+        
+        std::queue<Node*> queue0;
+        nodes_queue.push_back(queue0);
         while(flag)
         {
-            distance = distance + 1;
+            distance = grid.at(y).at(x)->get_cost();
+            /*
             for(int j = -distance ; j< distance; j++)
             {
                 int l = distance - abs(j);
@@ -146,18 +170,118 @@ void Utilities::grid_routing::Lee_algorithm1()
                         flag = false;
                 }
             }
+            */
+            if(x+1>=0 && x+1<=width -1 )
+            {
+                if(grid.at(y).at(x+1)->get_cost()== 0)   /*  node never be waved */
+                {
+                    grid.at(y).at(x+1) -> set_cost(distance + 1);
+                    std::queue<Node*> queue;
+                    nodes_queue.push_back(queue);
+                    nodes_queue.at(distance+1).push(grid.at(y).at(x+1));
+                    
+                }
+                if(grid.at(y).at(x+1)->get_cost()== -3)   /* meets sink */
+                {
+                    flag = false;
+                }
+            }
+            if(x-1>=0 && x-1<=width -1 )
+            {
+                if(grid.at(y).at(x-1)->get_cost()== 0)   /*  node never be waved */
+                {
+                    grid.at(y).at(x-1) -> set_cost(distance + 1);
+                    if(nodes_queue.size()<distance+2)
+                    {
+                        std::queue<Node*> queue;
+                        nodes_queue.push_back(queue);
+                        nodes_queue.at(distance+1).push(grid.at(y).at(x-1));
+                    }
+                    else
+                        nodes_queue.at(distance+1).push(grid.at(y).at(x-1));
+                }
+                if(grid.at(y).at(x-1)->get_cost()== -3)   /* meets sink */
+                {
+                    flag = false;
+                }
+            }
+            if(y-1>=0 && y-1<=width -1 )
+            {
+                if(grid.at(y-1).at(x)->get_cost()== 0)   /*  node never be waved */
+                {
+                    grid.at(y-1).at(x) -> set_cost(distance + 1);
+                    if(nodes_queue.size()<distance+2)
+                    {
+                        std::queue<Node*> queue;
+                        nodes_queue.push_back(queue);
+                        nodes_queue.at(distance+1).push(grid.at(y-1).at(x));
+                    }
+                    else
+                        nodes_queue.at(distance+1).push(grid.at(y-1).at(x));
+                }
+                if(grid.at(y-1).at(x)->get_cost()== -3)   /* meets sink */
+                {
+                    flag = false;
+                }
+
+            }
+            if(y+1>=0 && y+1<=width -1 )
+            {
+                if(grid.at(y+1).at(x)->get_cost()== 0)   /*  node never be waved */
+                {
+                    grid.at(y+1).at(x) -> set_cost(distance + 1);
+                    if(nodes_queue.size()<distance+2)
+                    {
+                        std::queue<Node*> queue;
+                        nodes_queue.push_back(queue);
+                        nodes_queue.at(distance+1).push(grid.at(y+1).at(x));
+                    }
+                    else
+                        nodes_queue.at(distance+1).push(grid.at(y+1).at(x));
+                }
+                if(grid.at(y+1).at(x)->get_cost()== -3)   /* meets sink */
+                {
+                    flag = false;
+                }
+            }
+            if(!nodes_queue.at(distance).empty())
+            {
+                x = nodes_queue.at(distance).front() -> get_x();
+                y = nodes_queue.at(distance).front() -> get_y();
+                nodes_queue.at(distance).pop();
+            }
+            else
+            {
+                x = nodes_queue.at(distance+1).front() -> get_x();
+                y = nodes_queue.at(distance+1).front() -> get_y();
+                nodes_queue.at(distance+1).pop();
+            }
         }
         // EXPANSION ENDS HERE
-        
+        for(int m = height -1; m>=0; m--)
+            for(int n = 0; n<width; n++ )
+            {
+                if(n == width -1)
+                    std::cout << grid.at(m).at(n)->get_cost()<< std::endl;
+                else
+                    std::cout << grid.at(m).at(n)->get_cost()<< " ";
+            }
+
         // BACKTRACING STARTS HERE
-        int x = sink_x;
-        int y = sink_y;
+        x = sink_x;
+        y = sink_y;
 	
-	
-        for(int step = distance; step > 0 ; step--)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
+        for(int step = distance+1; step > 0 ; step--)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
         {
             bool move = false;    // WHENEVER MAKE A MOVE
-	    
+            
+            if (step == 1)
+            {
+                Point head(x,y);
+                Point tail(source_x, source_y);
+                PathSegment* path_segment = new PathSegment(head, tail);
+                new_path -> add_segment(path_segment);
+            }
             if(x+1 >= 0 && x+1 <= width-1)     // RIGHT STEP IS NOT OUT OF RANGE
             {
                 if(grid.at(y).at(x+1)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
@@ -171,52 +295,48 @@ void Utilities::grid_routing::Lee_algorithm1()
                 }
             }
 
-	    if(x-1 >= 0 && x-1 <= width-1 && !move)     // LEFT STEP IS NOT OUT OF RANGE
-	    {
-	        if(grid.at(y).at(x-1)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
-	        {
-	            Point head(x ,y);
-	            x--;
-	            Point tail(x ,y);
-	            move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
-	            PathSegment* path_segment = new PathSegment(head, tail);
-	            new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
-	        }
-	    }
+            if(x-1 >= 0 && x-1 <= width-1 && !move)     // LEFT STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y).at(x-1)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    x--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                }
+            }
 
-	    if(y+1 >= 0 && y+1 <= height-1 && !move)     // UP STEP IS NOT OUT OF RANGE
-	    {
-	        if(grid.at(y+1).at(x)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
-	        {
-	            Point head(x ,y);
-	            y++;
-	            Point tail(x ,y);
-	            move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
-	            PathSegment* path_segment = new PathSegment(head, tail);
-	            new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
-	        }
-	    }
-		
-	    if(y-1 >= 0 && y-1 <= height-1 && !move)     // DOWN STEP IS NOT OUT OF RANGE
-	    {
-	        if(grid.at(y-1).at(x)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
-	        {
-	            Point head(x ,y);
-	            y--;
-	            Point tail(x ,y);
-	            move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
-	            PathSegment* path_segment = new PathSegment(head, tail);
-	            new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
-	        }
-	    }
-	    
-	}
-	// BACK TRACING ENDS HERE
-	
+            if(y+1 >= 0 && y+1 <= height-1 && !move)     // UP STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y+1).at(x)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                }
+            }
+            
+            if(y-1 >= 0 && y-1 <= height-1 && !move)     // DOWN STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y-1).at(x)-> get_cost() == step - 1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                }
+            }
+        }
+        // BACK TRACING ENDS HERE
         paths.push_back(new_path);
-        
     }
-   
     //return paths;
     print();
 }
@@ -237,6 +357,7 @@ void Utilities::grid_routing::There_bit1()
     int num_paths = this->problem_object -> get_connections().size();
     for(int i = 0; i < num_paths ; i++)
     {
+        vector<std::queue<Node*> > nodes_queue;
         Path* new_path = new Path();
         int source_x = source_sink_connections.at(i).source.x;
         int source_y = source_sink_connections.at(i).source.y;
@@ -256,9 +377,15 @@ void Utilities::grid_routing::There_bit1()
         // EXPANSION STARTS HERE
         bool flag = true;     // FLAG = FALSE WHEN SINK IS REACHED
         
+        std::queue<Node*> queue0;
+        nodes_queue.push_back(queue0);
+        
+        int x = source_x;
+        int y = source_y;
         while(flag)
         {
-            distance = distance + 1;
+            
+            /*
             for(int j = -distance ; j< distance; j++)
             {
                 int l = distance - abs(j);
@@ -283,14 +410,112 @@ void Utilities::grid_routing::There_bit1()
                         flag = false;
                 }
             }
+             */
+            
+            //int yushu = (distance+2) % 3 + 1;
+            if(x+1>=0 && x+1<=width -1 )
+            {
+                if(grid.at(y).at(x+1)->get_cost()== 0)   //  node never be waved
+                {
+                    grid.at(y).at(x+1) -> set_cost((distance+1+2) % 3 + 1);
+                    std::queue<Node*> queue;
+                    nodes_queue.push_back(queue);
+                    nodes_queue.at(distance+1).push(grid.at(y).at(x+1));
+                    
+                }
+                if(grid.at(y).at(x+1)->get_cost()== -3)   // meets sink
+                {
+                    flag = false;
+                }
+            }
+            if(x-1>=0 && x-1<=width -1)
+            {
+                if(grid.at(y).at(x-1)->get_cost()== 0)   //  node never be waved
+                {
+                    grid.at(y).at(x-1) -> set_cost((distance+1+2) % 3 + 1);
+                    if(nodes_queue.size()<distance+2)
+                    {
+                        std::queue<Node*> queue;
+                        nodes_queue.push_back(queue);
+                        nodes_queue.at(distance+1).push(grid.at(y).at(x-1));
+                    }
+                    else
+                        nodes_queue.at(distance+1).push(grid.at(y).at(x-1));
+                }
+                if(grid.at(y).at(x-1)->get_cost()== -3)   // meets sink
+                {
+                    flag = false;
+                }
+            }
+            if(y-1>=0 && y-1<=width -1)
+            {
+                if(grid.at(y-1).at(x)->get_cost()== 0)   //  node never be waved
+                {
+                    grid.at(y-1).at(x) -> set_cost((distance+1+2) % 3 + 1);
+                    if(nodes_queue.size()<distance+2)
+                    {
+                        std::queue<Node*> queue;
+                        nodes_queue.push_back(queue);
+                        nodes_queue.at(distance+1).push(grid.at(y-1).at(x));
+                    }
+                    else
+                        nodes_queue.at(distance+1).push(grid.at(y-1).at(x));
+                }
+                if(grid.at(y-1).at(x)->get_cost()== -3)   // meets sink
+                {
+                    flag = false;
+                }
+                
+            }
+            if(y+1>=0 && y+1<=width -1)
+            {
+                if(grid.at(y+1).at(x)->get_cost()== 0)   // node never be waved
+                {
+                    grid.at(y+1).at(x) -> set_cost((distance+1+2) % 3 + 1);
+                    if(nodes_queue.size()<distance+2)
+                    {
+                        std::queue<Node*> queue;
+                        nodes_queue.push_back(queue);
+                        nodes_queue.at(distance+1).push(grid.at(y+1).at(x));
+                    }
+                    else
+                        nodes_queue.at(distance+1).push(grid.at(y+1).at(x));
+                }
+                if(grid.at(y+1).at(x)->get_cost()== -3)   // meets sink
+                {
+                    flag = false;
+                }
+            }
+            if(!nodes_queue.at(distance).empty())
+            {
+                x = nodes_queue.at(distance).front() -> get_x();
+                y = nodes_queue.at(distance).front() -> get_y();
+                nodes_queue.at(distance).pop();
+            }
+            else
+            {
+                x = nodes_queue.at(distance+1).front() -> get_x();
+                y = nodes_queue.at(distance+1).front() -> get_y();
+                nodes_queue.at(distance+1).pop();
+                distance++;
+            }
+            
         }
-        
         // EXPANSION ENDS HERE
+        for(int m = height -1; m>=0; m--)
+            for(int n = 0; n<width; n++ )
+            {
+                if(n == width -1)
+                    std::cout << grid.at(m).at(n)->get_cost()<< std::endl;
+                else
+                    std::cout << grid.at(m).at(n)->get_cost()<< " ";
+            }
         
+        std::cout<< distance<<std::endl;
         // BACKTRACING STARTS HERE
-        int x = sink_x;
-        int y = sink_y;
-        for(int step = distance; step > 0 ; step--)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
+        x = sink_x;
+        y = sink_y;
+        for(int step = distance+1; step > 0 ; step--)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
         {
             bool move = false;    // WHENEVER MAKE A MOVE
             
@@ -354,7 +579,6 @@ void Utilities::grid_routing::There_bit1()
             }
             
         }
-        
         // BACK TRACING ENDS HERE
         paths.push_back(new_path);
     }
@@ -378,6 +602,7 @@ void Utilities::grid_routing::Two_bit1()
     
     for(int i = 0; i < num_paths ; i++)
     {
+        vector<std::queue<Node*> > nodes_queue;
         Path* new_path = new Path();
         int source_x = source_sink_connections.at(i).source.x;
         int source_y = source_sink_connections.at(i).source.y;
@@ -398,10 +623,14 @@ void Utilities::grid_routing::Two_bit1()
         // EXPANSION STARTS HERE
         bool flag = true;     // FLAG = FALSE WHEN SINK IS REACHED
         
+        int x = source_x;
+        int y = source_y;
         
+        std::queue<Node*> queue0;
+        nodes_queue.push_back(queue0);
         while(flag)
         {
-            distance = distance + 1;
+            /*
             for(int j = -distance ; j< distance; j++)
             {
                 int l = distance - abs(j);
@@ -419,23 +648,117 @@ void Utilities::grid_routing::Two_bit1()
                 {
                     if(grid.at(source_y - l).at(source_x - j)-> get_cost() == 0)     //FOUND EMPTY NODE
                     {
-                        int yushu = distance % 4;
+                        int yushu = ((distance + 3) % 4 )/2 + 1;
                         grid.at(source_y - l).at(source_x - j) -> set_cost(yushu);      //SET COST
                     }
                     if(grid.at(source_y - l).at(source_x - j)-> get_cost() == -3)    //STOP WHEN SINK IS REACHED
                         flag = false;
                 }
             }
+             */
+            if(x+1>=0 && x+1<=width -1 )
+            {
+                if(grid.at(y).at(x+1)->get_cost()== 0)   //  node never be waved
+                {
+                    grid.at(y).at(x+1) -> set_cost(((distance+1 + 3) % 4 )/2 + 1);
+                    std::queue<Node*> queue;
+                    nodes_queue.push_back(queue);
+                    nodes_queue.at(distance+1).push(grid.at(y).at(x+1));
+                    
+                }
+                if(grid.at(y).at(x+1)->get_cost()== -3)   // meets sink
+                {
+                    flag = false;
+                }
+            }
+            if(x-1>=0 && x-1<=width -1)
+            {
+                if(grid.at(y).at(x-1)->get_cost()== 0)   //  node never be waved
+                {
+                    grid.at(y).at(x-1) -> set_cost(((distance+1 + 3) % 4 )/2 + 1);
+                    if(nodes_queue.size()<distance+2)
+                    {
+                        std::queue<Node*> queue;
+                        nodes_queue.push_back(queue);
+                        nodes_queue.at(distance+1).push(grid.at(y).at(x-1));
+                    }
+                    else
+                        nodes_queue.at(distance+1).push(grid.at(y).at(x-1));
+                }
+                if(grid.at(y).at(x-1)->get_cost()== -3)   // meets sink
+                {
+                    flag = false;
+                }
+            }
+            if(y-1>=0 && y-1<=width -1)
+            {
+                if(grid.at(y-1).at(x)->get_cost()== 0)   //  node never be waved
+                {
+                    grid.at(y-1).at(x) -> set_cost(((distance+1 + 3) % 4 )/2 + 1);
+                    if(nodes_queue.size()<distance+2)
+                    {
+                        std::queue<Node*> queue;
+                        nodes_queue.push_back(queue);
+                        nodes_queue.at(distance+1).push(grid.at(y-1).at(x));
+                    }
+                    else
+                        nodes_queue.at(distance+1).push(grid.at(y-1).at(x));
+                }
+                if(grid.at(y-1).at(x)->get_cost()== -3)   // meets sink
+                {
+                    flag = false;
+                }
+                
+            }
+            if(y+1>=0 && y+1<=width -1)
+            {
+                if(grid.at(y+1).at(x)->get_cost()== 0)   // node never be waved
+                {
+                    grid.at(y+1).at(x) -> set_cost(((distance+1 + 3) % 4 )/2 + 1);
+                    if(nodes_queue.size()<distance+2)
+                    {
+                        std::queue<Node*> queue;
+                        nodes_queue.push_back(queue);
+                        nodes_queue.at(distance+1).push(grid.at(y+1).at(x));
+                    }
+                    else
+                        nodes_queue.at(distance+1).push(grid.at(y+1).at(x));
+                }
+                if(grid.at(y+1).at(x)->get_cost()== -3)   // meets sink
+                {
+                    flag = false;
+                }
+            }
+            if(!nodes_queue.at(distance).empty())
+            {
+                x = nodes_queue.at(distance).front() -> get_x();
+                y = nodes_queue.at(distance).front() -> get_y();
+                nodes_queue.at(distance).pop();
+            }
+            else
+            {
+                x = nodes_queue.at(distance+1).front() -> get_x();
+                y = nodes_queue.at(distance+1).front() -> get_y();
+                nodes_queue.at(distance+1).pop();
+                distance++;
+            }
+
         }
-        
         // EXPANSION ENDS HERE
-        
+        for(int m = height -1; m>=0; m--)
+            for(int n = 0; n<width; n++ )
+            {
+                if(n == width -1)
+                    std::cout << grid.at(m).at(n)->get_cost()<< std::endl;
+                else
+                    std::cout << grid.at(m).at(n)->get_cost()<< " ";
+            }
         // BACKTRACING STARTS HERE
-        int x = sink_x;
-        int y = sink_y;
+        x = sink_x;
+        y = sink_y;
         
         
-        for(int step = distance; step > 0 ; step--)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
+        for(int step = distance+1; step > 0 ; step--)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
         {
             bool move = false;    // WHENEVER MAKE A MOVE
             
@@ -508,6 +831,10 @@ void Utilities::grid_routing::Two_bit1()
     //return paths;
     print();
 }
+
+
+
+
 
 
 
@@ -1046,6 +1373,263 @@ grid.at(source_y).at(source_x)->set_cost(-2);
 
 
 
+void Utilities::grid_routing::Hadlock1()
+{
+    initialize_map();
+    vector<Connection> source_sink_connections = this->problem_object -> get_connections();
+    int num_paths = this->problem_object -> get_connections().size();
+    
+    for(int i = 0; i < num_paths ; i++)
+    {
+        vector< std::queue<Node*> > detour_queue;           /* each queue store the nodes with same detour value */
+        //vector<Edge*> edges;
+        Path* new_path = new Path();
+        int source_x = source_sink_connections.at(i).source.x;
+        int source_y = source_sink_connections.at(i).source.y;
+        int sink_x = source_sink_connections.at(i).sink.x;
+        int sink_y = source_sink_connections.at(i).sink.y;
+        int height = problem_object->get_height();
+        int width = problem_object->get_width();
+        
+        if(source_x >= 0 && source_x < width && source_y >= 0 && source_y < height && sink_x >= 0 && sink_x < width && sink_y >= 0 && sink_y < height)
+        {
+            grid.at(source_y).at(source_x) -> set_cost(0); //LABEL NODE AS COST=0 WHEN THE NODE IS IN A SOURCE
+            grid.at(sink_y).at(sink_x) -> set_cost(8); //LABEL NODE AS COST=-3 WHEN THE NODE IS IN A SINK
+            
+        }
+        int x = source_x;
+        int y = source_y;
+        
+        std::queue<Node*> queue0;                /* since source's detour value is 0, we can add a queue first */
+        detour_queue.push_back(queue0);
+        
+        bool flag = true;
+        while(flag)
+        {
+            int d = grid.at(y).at(x)->get_cost();
+            if(x+1>=0 && x+1<=width -1)
+            {
+                if(grid.at(y).at(x+1)->get_cost()== 9)          /* the grid never be waved */
+                {
+                    if(sink_x > source_x && x+1 <= sink_x)
+                    {
+                        grid.at(y).at(x+1) -> set_cost(d);
+                        detour_queue.at(d).push(grid.at(y).at(x+1));
+                        Node* head = new Node(x, y);
+                        Node* tail = new Node(x+1,y);
+                        Edge* edge = new Edge(head, tail);
+                        
+                        head -> add_connection(edge);
+                    }
+                    else
+                    {
+                        grid.at(y).at(x+1) -> set_cost(d+1);
+                        Node* head = new Node(x, y);
+                        Node* tail = new Node(x+1,y);
+                        Edge* edge = new Edge(head, tail);
+                        head -> add_connection(edge);
+                        
+                        std::queue<Node*> queue;
+                        detour_queue.push_back(queue);
+                        detour_queue.at(d+1).push(grid.at(y).at(x+1));
+                    }
+                }
+                if(grid.at(y).at(x+1) ->get_cost() == 8)         /* meet source */
+                {
+                    flag = false;
+                    Node* head = new Node(x, y);
+                    Node* tail = new Node(x+1,y);
+                    Edge* edge = new Edge(head, tail);
+                    tail -> add_connection(edge);
+                }
+            }
+            if(x-1>=0 && x-1<=width -1)
+            {
+                if(grid.at(y).at(x-1)->get_cost()== 9)          /* the grid never be waved */
+                {
+                    if(sink_x < source_x && x-1 >= sink_x)
+                    {
+                        grid.at(y).at(x-1) -> set_cost(d);
+                        detour_queue.at(d).push(grid.at(y).at(x-1));
+                        
+                        Node* head = new Node(x, y);
+                        Node* tail = new Node(x-1,y);
+                        Edge* edge = new Edge(head, tail);
+                        tail -> add_connection(edge);
+                        
+                    }
+                    else
+                    {
+                        grid.at(y).at(x-1) -> set_cost(d+1);
+                        if(detour_queue.size()< d+2)              /* check if the queue store (d+1) is created, if not, create it */
+                        {
+                            std::queue<Node*> queue;
+                            detour_queue.push_back(queue);
+                            detour_queue.at(d+1).push(grid.at(y).at(x-1));
+                            Node* head = new Node(x, y);
+                            Node* tail = new Node(x-1,y);
+                            Edge* edge = new Edge(head, tail);
+                            tail -> add_connection(edge);
+                        }
+                        else
+                            detour_queue.at(d+1).push(grid.at(y).at(x-1));
+                            Node* head = new Node(x, y);
+                            Node* tail = new Node(x-1,y);
+                            Edge* edge = new Edge(head, tail);
+                            tail -> add_connection(edge);
+                    }
+                }
+                if(grid.at(y).at(x-1)->get_cost() == 8)          /* meet source */
+                {
+                    Node* head = new Node(x, y);
+                    Node* tail = new Node(x-1,y);
+                    Edge* edge = new Edge(head, tail);
+                    tail -> add_connection(edge);
+                    flag = false;
+                }
+            }
+            if(y-1>=0 && y-1<=height -1)
+            {
+                if(grid.at(y-1).at(x)->get_cost()== 9)        /* the grid never be waved */
+                {
+                    if(sink_y < source_y && y-1 >= sink_y)
+                    {
+                        grid.at(y-1).at(x) -> set_cost(d);
+                        detour_queue.at(d).push(grid.at(y-1).at(x));
+                        Node* head = new Node(x, y);
+                        Node* tail = new Node(x,y-1);
+                        Edge* edge = new Edge(head, tail);
+                        tail -> add_connection(edge);
+                    }
+                    else
+                    {
+                        grid.at(y-1).at(x) -> set_cost(d+1);
+                        if(detour_queue.size()< d+2)               /* check if the queue store (d+1) is created, if not, create it */
+                        {
+                            std::queue<Node*> queue;
+                            detour_queue.push_back(queue);
+                            detour_queue.at(d+1).push(grid.at(y-1).at(x));
+                            
+                            Node* head = new Node(x, y);
+                            Node* tail = new Node(x,y-1);
+                            Edge* edge = new Edge(head, tail);
+                            tail -> add_connection(edge);
+                        }
+                        else
+                            detour_queue.at(d+1).push(grid.at(y-1).at(x));
+                            Node* head = new Node(x, y);
+                            Node* tail = new Node(x,y-1);
+                            Edge* edge = new Edge(head, tail);
+                            tail -> add_connection(edge);
+                    }
+                }
+                if(grid.at(y-1).at(x)->get_cost()== 8)            /* meet source */
+                {
+                    Node* head = new Node(x, y);
+                    Node* tail = new Node(x,y-1);
+                    Edge* edge = new Edge(head, tail);
+                    tail -> add_connection(edge);
+                    flag = false;
+                }
+            }
+            if(y+1>=0 && y+1<=height -1)
+            {
+                if(grid.at(y+1).at(x)->get_cost()== 9)           /* the grid never be waved */
+                {
+                    if(sink_y > source_y && y+1 <= sink_y)
+                    {
+                        grid.at(y+1).at(x) -> set_cost(d);
+                        detour_queue.at(d).push(grid.at(y+1).at(x));
+                        Node* head = new Node(x, y);
+                        Node* tail = new Node(x,y+1);
+                        Edge* edge = new Edge(head, tail);
+                        tail -> add_connection(edge);
+                    }
+                    else
+                    {
+                        grid.at(y+1).at(x) -> set_cost(d+1);
+                        if(detour_queue.size()< d+2)              /* check if the queue store (d+1) is created, if not, create it */
+                        {
+                            std::queue<Node*> queue;
+                            detour_queue.push_back(queue);
+                            detour_queue.at(d+1).push(grid.at(y+1).at(x));
+                            Node* head = new Node(x, y);
+                            Node* tail = new Node(x,y+1);
+                            Edge* edge = new Edge(head, tail);
+                            tail -> add_connection(edge);
+                        }
+                        else
+                            detour_queue.at(d+1).push(grid.at(y+1).at(x));
+                            Node* head = new Node(x, y);
+                            Node* tail = new Node(x,y+1);
+                            Edge* edge = new Edge(head, tail);
+                            tail -> add_connection(edge);
+                    }
+                }
+                if(grid.at(y+1).at(x)->get_cost()== 8)          /* meet source */
+                {
+                    Node* head = new Node(x, y);
+                    Node* tail = new Node(x,y+1);
+                    Edge* edge = new Edge(head, tail);
+                    tail -> add_connection(edge);
+                    flag = false;
+                }
+            }
+            
+            if(!detour_queue.at(d).empty())  /*if the queue store current detour value isn't empty, means the four nodes around has same detour, we can wave it */
+            {
+                x = detour_queue.at(d).front() -> get_x();
+                y = detour_queue.at(d).front() -> get_y();
+                detour_queue.at(d).pop();
+            }
+            else                 /* if the queue store current detour is empty,means the four nodes around's detour is larger,we have to check the first node with same detour stored to the queue */
+            {
+                x = detour_queue.at(d+1).front() -> get_x();
+                y = detour_queue.at(d+1).front() -> get_y();
+                detour_queue.at(d+1).pop();
+            }
+        }
+        //wave over
+        
+        for(int m = height -1; m>=0; m--)
+            for(int n = 0; n<width; n++ )
+            {
+                if(n == width -1)
+                    std::cout << grid.at(m).at(n)->get_cost()<< std::endl;
+                else
+                    std::cout << grid.at(m).at(n)->get_cost()<< " ";
+            }
+        
+        
+        //start to backtacing
+        x = sink_x;
+        y = sink_y;
+        flag = true;
+        while(flag)
+        {
+            Point head(x,y);
+            int a =grid.at(y).at(x) ->connections_size();
+            x = grid.at(y).at(x)-> connections_at(0) -> get_head() -> get_x();
+            y = grid.at(y).at(x)-> connections_at(0) -> get_head() -> get_y();
+            Point tail(x,y);
+            std::cout<< x << " " << y<<std::endl;
+
+            PathSegment* path_segment = new PathSegment(head, tail);
+            new_path -> add_segment( path_segment);
+            if(x == source_x && y == source_y)
+                flag = false;
+        }
+        paths.push_back(new_path);
+
+    }
+    print();
+    
+    
+}
+
+
+
+
 
 
 
@@ -1068,11 +1652,11 @@ void Utilities::grid_routing::print()
                 return;
         }
 	
-        for(unsigned i = 0; i < paths.size(); i++) {
-		std::cout << "Path " << i << ": ";
-		paths.at(i)->print();
-		Path* temp = paths.at(i);
-		delete temp;
+    for(unsigned i = 0; i < paths.size(); i++) {
+    std::cout << "Path " << i << ": ";
+    paths.at(i)->print();
+    Path* temp = paths.at(i);
+    delete temp;
 	}
 	paths.clear();
 }

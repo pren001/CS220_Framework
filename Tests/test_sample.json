@@ -1,16 +1,16 @@
 {
 	"file_name": "test_sample",
 
-	"height": 50,
-	"width": 50,
+	"height": 30,
+	"width": 30,
 
 	"blockerList": [
-	{"name": "blocker1", "width": 10, "height": 10, "x": 3, "y": 5},
-	{"name": "blocker2", "width": 10, "height": 15, "x": 5, "y": 2}
+	{"name": "blocker1", "width": 5, "height": 2, "x": 3, "y": 8},
+	{"name": "blocker2", "width": 2, "height": 5, "x": 2, "y": 1},
+	{"name": "blocker3", "width": 1, "height": 1, "x": 4, "y": 10}
 	],
 
 	"routeList": [
-	{"name": "route1", "source_x": 0, "source_y": 0, "sink_x": 3, "sink_y": 3},
-	{"name": "route2", "source_x": 25, "source_y": 0, "sink_x": 25, "sink_y": 14}
+	{"name": "route1", "source_x": 6, "source_y": 10, "sink_x": 4, "sink_y": 4}
 	]
 }
