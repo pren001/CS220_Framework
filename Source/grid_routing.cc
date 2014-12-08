@@ -66,11 +66,7 @@ void Utilities::grid_routing::initialize_map()    /* initialzie the map with blo
       		int block_y = blockers.at(i).location.y;
       		for( unsigned int h = block_y; h < block_y + block_height ; h++ )
       		{
-<<<<<<< HEAD
-      			for(unsigned int w = block_x; w < block_x + block_width ; w++)
-=======
       			for(unsigned int w = block_x; w < block_x+ block_width ; w++)
->>>>>>> FETCH_HEAD
       			{
       				if(h<height&& w<width) grid.at(h).at(w) -> set_cost(-1);
       			}
@@ -1377,6 +1373,8 @@ grid.at(source_y).at(source_x)->set_cost(-2);
 
 
 
+
+
 void Utilities::grid_routing::Hadlock1()
 {
     initialize_map();
@@ -1398,7 +1396,7 @@ void Utilities::grid_routing::Hadlock1()
         if(source_x >= 0 && source_x < width && source_y >= 0 && source_y < height && sink_x >= 0 && sink_x < width && sink_y >= 0 && sink_y < height)
         {
             grid.at(source_y).at(source_x) -> set_cost(0); //LABEL NODE AS COST=0 WHEN THE NODE IS IN A SOURCE
-            grid.at(sink_y).at(sink_x) -> set_cost(8); //LABEL NODE AS COST=-3 WHEN THE NODE IS IN A SINK
+            grid.at(sink_y).at(sink_x) -> set_cost(-3); //LABEL NODE AS COST=-3 WHEN THE NODE IS IN A SINK
             
         }
         int x = source_x;
@@ -1413,17 +1411,17 @@ void Utilities::grid_routing::Hadlock1()
             int d = grid.at(y).at(x)->get_cost();
             if(x+1>=0 && x+1<=width -1)
             {
-                if(grid.at(y).at(x+1)->get_cost()== 9)          /* the grid never be waved */
+                if(grid.at(y).at(x+1)->get_cost()== 0)          /* the grid never be waved */
                 {
                     if(sink_x > source_x && x+1 <= sink_x)
                     {
                         grid.at(y).at(x+1) -> set_cost(d);
                         detour_queue.at(d).push(grid.at(y).at(x+1));
-                        Node* head = new Node(x, y);
-                        Node* tail = new Node(x+1,y);
+                        Node* head = grid.at(y).at(x);
+                        Node* tail = grid.at(y).at(x+1);
                         Edge* edge = new Edge(head, tail);
                         
-                        head -> add_connection(edge);
+                        grid.at(y).at(x+1) -> add_connection(edge);
                     }
                     else
                     {
@@ -1431,25 +1429,25 @@ void Utilities::grid_routing::Hadlock1()
                         Node* head = new Node(x, y);
                         Node* tail = new Node(x+1,y);
                         Edge* edge = new Edge(head, tail);
-                        head -> add_connection(edge);
+                        grid.at(y).at(x+1) -> add_connection(edge);
                         
                         std::queue<Node*> queue;
                         detour_queue.push_back(queue);
                         detour_queue.at(d+1).push(grid.at(y).at(x+1));
                     }
                 }
-                if(grid.at(y).at(x+1) ->get_cost() == 8)         /* meet source */
+                if(grid.at(y).at(x+1) ->get_cost() == -3)         /* meet source */
                 {
-                    flag = false;
                     Node* head = new Node(x, y);
                     Node* tail = new Node(x+1,y);
                     Edge* edge = new Edge(head, tail);
-                    tail -> add_connection(edge);
+                    grid.at(y).at(x+1) -> add_connection(edge);
+                    flag = false;
                 }
             }
             if(x-1>=0 && x-1<=width -1)
             {
-                if(grid.at(y).at(x-1)->get_cost()== 9)          /* the grid never be waved */
+                if(grid.at(y).at(x-1)->get_cost()== 0)          /* the grid never be waved */
                 {
                     if(sink_x < source_x && x-1 >= sink_x)
                     {
@@ -1459,7 +1457,7 @@ void Utilities::grid_routing::Hadlock1()
                         Node* head = new Node(x, y);
                         Node* tail = new Node(x-1,y);
                         Edge* edge = new Edge(head, tail);
-                        tail -> add_connection(edge);
+                        grid.at(y).at(x-1) -> add_connection(edge);
                         
                     }
                     else
@@ -1473,28 +1471,28 @@ void Utilities::grid_routing::Hadlock1()
                             Node* head = new Node(x, y);
                             Node* tail = new Node(x-1,y);
                             Edge* edge = new Edge(head, tail);
-                            tail -> add_connection(edge);
+                            grid.at(y).at(x-1) -> add_connection(edge);
                         }
                         else
                             detour_queue.at(d+1).push(grid.at(y).at(x-1));
                             Node* head = new Node(x, y);
                             Node* tail = new Node(x-1,y);
                             Edge* edge = new Edge(head, tail);
-                            tail -> add_connection(edge);
+                            grid.at(y).at(x-1) -> add_connection(edge);
                     }
                 }
-                if(grid.at(y).at(x-1)->get_cost() == 8)          /* meet source */
+                if(grid.at(y).at(x-1)->get_cost() == -3)          /* meet source */
                 {
                     Node* head = new Node(x, y);
                     Node* tail = new Node(x-1,y);
                     Edge* edge = new Edge(head, tail);
-                    tail -> add_connection(edge);
+                    grid.at(y).at(x-1) -> add_connection(edge);
                     flag = false;
                 }
             }
             if(y-1>=0 && y-1<=height -1)
             {
-                if(grid.at(y-1).at(x)->get_cost()== 9)        /* the grid never be waved */
+                if(grid.at(y-1).at(x)->get_cost()== 0)        /* the grid never be waved */
                 {
                     if(sink_y < source_y && y-1 >= sink_y)
                     {
@@ -1503,7 +1501,7 @@ void Utilities::grid_routing::Hadlock1()
                         Node* head = new Node(x, y);
                         Node* tail = new Node(x,y-1);
                         Edge* edge = new Edge(head, tail);
-                        tail -> add_connection(edge);
+                        grid.at(y-1).at(x) -> add_connection(edge);
                     }
                     else
                     {
@@ -1517,28 +1515,28 @@ void Utilities::grid_routing::Hadlock1()
                             Node* head = new Node(x, y);
                             Node* tail = new Node(x,y-1);
                             Edge* edge = new Edge(head, tail);
-                            tail -> add_connection(edge);
+                            grid.at(y-1).at(x) -> add_connection(edge);
                         }
                         else
                             detour_queue.at(d+1).push(grid.at(y-1).at(x));
                             Node* head = new Node(x, y);
                             Node* tail = new Node(x,y-1);
                             Edge* edge = new Edge(head, tail);
-                            tail -> add_connection(edge);
+                            grid.at(y-1).at(x) -> add_connection(edge);
                     }
                 }
-                if(grid.at(y-1).at(x)->get_cost()== 8)            /* meet source */
+                if(grid.at(y-1).at(x)->get_cost()== -3)            /* meet source */
                 {
                     Node* head = new Node(x, y);
                     Node* tail = new Node(x,y-1);
                     Edge* edge = new Edge(head, tail);
-                    tail -> add_connection(edge);
+                    grid.at(y-1).at(x) -> add_connection(edge);
                     flag = false;
                 }
             }
             if(y+1>=0 && y+1<=height -1)
             {
-                if(grid.at(y+1).at(x)->get_cost()== 9)           /* the grid never be waved */
+                if(grid.at(y+1).at(x)->get_cost()== 0)           /* the grid never be waved */
                 {
                     if(sink_y > source_y && y+1 <= sink_y)
                     {
@@ -1547,7 +1545,7 @@ void Utilities::grid_routing::Hadlock1()
                         Node* head = new Node(x, y);
                         Node* tail = new Node(x,y+1);
                         Edge* edge = new Edge(head, tail);
-                        tail -> add_connection(edge);
+                        grid.at(y+1).at(x) -> add_connection(edge);
                     }
                     else
                     {
@@ -1560,22 +1558,22 @@ void Utilities::grid_routing::Hadlock1()
                             Node* head = new Node(x, y);
                             Node* tail = new Node(x,y+1);
                             Edge* edge = new Edge(head, tail);
-                            tail -> add_connection(edge);
+                            grid.at(y+1).at(x) -> add_connection(edge);
                         }
                         else
                             detour_queue.at(d+1).push(grid.at(y+1).at(x));
                             Node* head = new Node(x, y);
                             Node* tail = new Node(x,y+1);
                             Edge* edge = new Edge(head, tail);
-                            tail -> add_connection(edge);
+                            grid.at(y+1).at(x) -> add_connection(edge);
                     }
                 }
-                if(grid.at(y+1).at(x)->get_cost()== 8)          /* meet source */
+                if(grid.at(y+1).at(x)->get_cost()== -3)          /* meet source */
                 {
                     Node* head = new Node(x, y);
                     Node* tail = new Node(x,y+1);
                     Edge* edge = new Edge(head, tail);
-                    tail -> add_connection(edge);
+                    grid.at(y+1).at(x) -> add_connection(edge);
                     flag = false;
                 }
             }
@@ -1604,31 +1602,27 @@ void Utilities::grid_routing::Hadlock1()
                     std::cout << grid.at(m).at(n)->get_cost()<< " ";
             }
         
-        
         //start to backtacing
         x = sink_x;
         y = sink_y;
+        
         flag = true;
         while(flag)
         {
-            Point head(x,y);
-            int a =grid.at(y).at(x) ->connections_size();
-            x = grid.at(y).at(x)-> connections_at(0) -> get_head() -> get_x();
-            y = grid.at(y).at(x)-> connections_at(0) -> get_head() -> get_y();
-            Point tail(x,y);
-            std::cout<< x << " " << y<<std::endl;
-
-            PathSegment* path_segment = new PathSegment(head, tail);
+            int x1 = grid.at(y).at(x)-> connections_at(0) -> get_head() -> get_x();
+            int y1 = grid.at(y).at(x)-> connections_at(0) -> get_head() -> get_y();
+            PathSegment* path_segment = new PathSegment(x,y,x1, y1);
             new_path -> add_segment( path_segment);
+            x = x1;
+            y = y1;
+             
             if(x == source_x && y == source_y)
                 flag = false;
         }
         paths.push_back(new_path);
-
     }
     print();
-    
-    
+
 }
 
 

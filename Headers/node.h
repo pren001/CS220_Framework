@@ -19,7 +19,8 @@ namespace Utilities {
             int cost;
 
             /* Private Mutators */
-            void add_connection_mirrored(Edge*);
+	    void add_connection_mirrored(Edge*);
+            
 
         public:
             /* Constructors/Destructors */
@@ -46,6 +47,8 @@ namespace Utilities {
             void add_connection(Edge* connection);
             void set_cost(int cost);
             void remove_connection(Edge* connection);
+
+	    
     };
 }
 
