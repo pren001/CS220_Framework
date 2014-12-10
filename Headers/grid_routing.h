@@ -18,7 +18,7 @@ namespace Utilities{
         private:
             vector<vector<Node*> > grid;
             int num_connections;
-            ProblemObject *problem_object;
+            ProblemObject* problem_object;
             vector<Path*> paths;
 	
             void print();
@@ -29,23 +29,23 @@ namespace Utilities{
             grid_routing(ProblemObject* problem_object);
             ~grid_routing();
             
-            void initialize_map();
+            void initialize_map(int node_initial_cost, int block_cost);
             
               
-            void Lee_algorithm1();   /*unlimited intersections*/
+            void Lee_algorithm();   /*unlimited intersections*/
             
-            void Two_bit1();    /*unlimited intersections*/
+            void Two_bits();    /*unlimited intersections*/
             
-            void There_bit1();    /*unlimited intersections*/
+            void Three_bits();    /*unlimited intersections*/
             
             
-            void Rubin1();   /*unlimited intersections*/
+            void Rubin();   /*unlimited intersections*/
             
             
             //void Korn_algorithm1();    /*no intersections*/
             //void Korn_algorithm2();    /*unlimited intersections*/
             
-            void Hadlock1();   /*no intersections*/
+            void Hadlock();   /*no intersections*/
             //void Hadlock_algorithm2();   /*unlimited intersections*/
 
 	    

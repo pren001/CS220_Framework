@@ -39,11 +39,36 @@ int main(int argc,char* argv[]) {
 	*/
 	
 	
-	g.Lee_algorithm1();
-	g.Two_bit1();
-	g.There_bit1();
+	//g.Lee_algorithm();
+	//g.Two_bits();
+	//g.Three_bits();
 	//g.Rubin1();
-	g.Hadlock1();
+	//g.Hadlock();
+    
+    int n = atoi(argv[2]);
+    switch(n){
+        case 0:
+            g.Lee_algorithm();
+        
+            break;
+        case 1:
+            g.Three_bits();
+        
+            break;
+        case 2:
+            g.Two_bits();
+        
+            break;
+	case 3:
+            g.Rubin();
+	    break;
+        case 5:
+            g.Hadlock();
+        
+    }
+    
+    
+    
 
 	
 	
