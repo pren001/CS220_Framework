@@ -32,14 +32,15 @@ namespace Utilities{
             void initialize_map(int node_initial_cost, int block_cost);
             
               
-            void Lee_algorithm();   /*unlimited intersections*/
+            void Lee();   /*unlimited intersections*/
             
             void Two_bits();    /*unlimited intersections*/
             
             void Three_bits();    /*unlimited intersections*/
             
             
-            void Rubin();   /*unlimited intersections*/
+            void Rubin_DFS();   /*unlimited intersections*/
+	    void Rubin_BFS();
             
             
             //void Korn_algorithm1();    /*no intersections*/

@@ -48,19 +48,19 @@ int main(int argc,char* argv[]) {
     int n = atoi(argv[2]);
     switch(n){
         case 0:
-            g.Lee_algorithm();
-        
+            g.Lee();     
             break;
         case 1:
-            g.Three_bits();
-        
+            g.Three_bits();      
             break;
         case 2:
-            g.Two_bits();
-        
+            g.Two_bits();       
             break;
 	case 3:
-            g.Rubin();
+            g.Rubin_DFS();
+	    break;
+	case 4:
+            g.Rubin_BFS();
 	    break;
         case 5:
             g.Hadlock();
