@@ -405,7 +405,6 @@ void Utilities::grid_routing::Lee()
                     if(direction_before!=direction_now)
                         c_turn2 ++;
                     direction_before = 4;
-                    std::cout<< step <<" "<<direction_now<<" "<<x<<" "<<y<<std::endl;
                 }
             }
             
@@ -423,7 +422,6 @@ void Utilities::grid_routing::Lee()
                     if(direction_before!=direction_now)
                         c_turn2 ++;
                     direction_before = 3;
-                    std::cout<< step <<" "<<direction_now<<" "<<x<<" "<<y<<std::endl;
                 }
             }
             if(x-1 >= 0 && x-1 <= width-1 && !move)     // LEFT STEP IS NOT OUT OF RANGE
@@ -440,7 +438,6 @@ void Utilities::grid_routing::Lee()
                     if(direction_before!=direction_now)
                         c_turn2 ++;
                     direction_before = 2;
-                    std::cout<< step <<" "<<direction_now<<" "<<x<<" "<<y<<std::endl;
                 }
             }
             if(x+1 >= 0 && x+1 <= width-1)     // RIGHT STEP IS NOT OUT OF RANGE
@@ -457,7 +454,6 @@ void Utilities::grid_routing::Lee()
                     if(direction_before!=direction_now)
                         c_turn2 ++;
                     direction_before = 1;
-                    std::cout<< step <<" "<<direction_now<<" "<<x<<" "<<y<<std::endl;
                 }
             }
             
@@ -1034,7 +1030,8 @@ void Utilities::grid_routing::Hadlock()
     {
         vector< std::queue<Node*> > detour_queue;           /* each queue store the nodes with same detour value */
         //vector<Edge*> edges;
-        Path* new_path = new Path();
+        Path* new_path1 = new Path();
+        Path* new_path2 = new Path();
         int source_x = source_sink_connections.at(i).source.x;
         int source_y = source_sink_connections.at(i).source.y;
         int sink_x = source_sink_connections.at(i).sink.x;
@@ -1064,6 +1061,7 @@ void Utilities::grid_routing::Hadlock()
         }
         int x = source_x;
         int y = source_y;
+        int d;
         
         std::queue<Node*> queue0;                /* since source's detour value is 0, we can add a queue first */
         detour_queue.push_back(queue0);
@@ -1071,7 +1069,7 @@ void Utilities::grid_routing::Hadlock()
         bool flag = true;
         while(flag)
         {
-            int d = grid.at(y).at(x)->get_cost();
+            d = grid.at(y).at(x)->get_cost();
             if(x+1>=0 && x+1<=width -1)
             {
                 if(grid.at(y).at(x+1)->get_cost()== -9)          /* the grid never be waved */
@@ -1157,8 +1155,6 @@ void Utilities::grid_routing::Hadlock()
                             Edge* edge = new Edge(head, tail);
                             grid.at(y).at(x-1) -> add_connection(edge);
                         }
-                        
-                        
                     }
                 }
                 if(grid.at(y).at(x-1)->get_cost() == -3)          /* meet source */
@@ -1287,6 +1283,7 @@ void Utilities::grid_routing::Hadlock()
             }
         }
         //wave over
+        int md = abs(source_x - sink_x) + abs(source_y - sink_y);
         
         for(int m = height -1; m>=0; m--)
             for(int n = 0; n<width; n++ )
@@ -1300,7 +1297,7 @@ void Utilities::grid_routing::Hadlock()
         //start to backtacing
         x = sink_x;
         y = sink_y;
-        
+        /*
         flag = true;
         while(flag)
         {
@@ -1315,6 +1312,307 @@ void Utilities::grid_routing::Hadlock()
                 flag = false;
         }
         paths.push_back(new_path);
+         */
+        x = sink_x;
+        y = sink_y;
+        
+        int direction_before = 0;
+        int direction_now = 0;
+        int c_turn1 = 0;
+        int c_turn2 = 0;
+        int distance = md + d*2;
+        std::cout<< distance <<std::endl;
+        
+        grid.at(y).at(x)->set_cost(d);
+        
+        for(int step = 0; step < distance ; step++)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
+        {
+            bool move = false;    // WHENEVER MAKE A MOVE
+            d = grid.at(y).at(x)->get_cost();
+            if(x+1 >= 0 && x+1 <= width-1)     // RIGHT STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y).at(x+1)-> get_cost() == d && abs(y-sink_y)+abs(x+1-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    x++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 1;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 1;
+                    
+                }
+                else if(grid.at(y).at(x+1)-> get_cost() == d-1)
+                {
+                    Point head(x ,y);
+                    x++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 1;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 1;
+                }
+                else
+                    move = false;
+
+            }
+            
+            if(x-1 >= 0 && x-1 <= width-1 && !move)     // LEFT STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y).at(x-1)-> get_cost() == d && abs(y-sink_y)+abs(x-1-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    x--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 2;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 2;
+                }
+                else if(grid.at(y).at(x-1)-> get_cost() == d-1)
+                {
+                    Point head(x ,y);
+                    x--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 2;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 2;
+                }
+                else
+                    move = false;
+
+            }
+            
+            if(y+1 >= 0 && y+1 <= height-1 && !move)     // UP STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y+1).at(x)-> get_cost() == d && abs(y+1-sink_y)+abs(x-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 3;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 3;
+                    
+                }
+                else if(grid.at(y+1).at(x)-> get_cost() == d-1)
+                {
+                    Point head(x ,y);
+                    y++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 3;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 3;
+                    
+                }
+                else
+                    move = false;
+
+            }
+            
+            if(y-1 >= 0 && y-1 <= height-1 && !move)     // DOWN STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y-1).at(x)-> get_cost() == d && abs(y-1-sink_y)+abs(x-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 4;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 4;
+                }
+                else if(grid.at(y-1).at(x)-> get_cost() == d-1)
+                {
+                    Point head(x ,y);
+                    y--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 4;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 4;
+            
+                }
+                else
+                    move = false;
+
+            }
+        }
+        
+        
+        x = sink_x;
+        y = sink_y;
+        for(int step = 0; step < distance ; step++)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
+        {
+            bool move = false;    // WHENEVER MAKE A MOVE
+            d = grid.at(y).at(x)->get_cost();
+            if(y-1 >= 0 && y-1 <= height-1 && !move)     // DOWN STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y-1).at(x)-> get_cost() == d && abs(y-1-sink_y)+abs(x-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 4;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 4;
+                }
+                else if(grid.at(y-1).at(x)-> get_cost() == d-1)
+                {
+                    Point head(x ,y);
+                    y--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 4;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 4;
+                    
+                }
+                else
+                    move = false;
+                
+            }
+            if(y+1 >= 0 && y+1 <= height-1 && !move)     // UP STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y+1).at(x)-> get_cost() == d && abs(y+1-sink_y)+abs(x-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 3;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 3;
+                    
+                }
+                else if(grid.at(y+1).at(x)-> get_cost() == d-1)
+                {
+                    Point head(x ,y);
+                    y++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 3;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 3;
+                    
+                }
+                else
+                    move = false;
+                
+            }
+            if(x-1 >= 0 && x-1 <= width-1 && !move)     // LEFT STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y).at(x-1)-> get_cost() == d && abs(y-sink_y)+abs(x-1-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    x--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 2;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 2;
+                }
+                else if(grid.at(y).at(x-1)-> get_cost() == d-1)
+                {
+                    Point head(x ,y);
+                    x--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 2;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 2;
+                }
+                else
+                    move = false;
+                
+            }
+            if(x+1 >= 0 && x+1 <= width-1)     // RIGHT STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y).at(x+1)-> get_cost() == d && abs(y-sink_y)+abs(x+1-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    x++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 1;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 1;
+                    
+                }
+                else if(grid.at(y).at(x+1)-> get_cost() == d-1)
+                {
+                    Point head(x ,y);
+                    x++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 1;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 1;
+                }
+                else
+                    move = false;
+                
+            }
+            
+        }
+        std::cout << "c_turn1 "<<c_turn1<<std::endl;
+        std::cout << "c_turn2 "<<c_turn2<<std::endl;
+        if(c_turn1 < c_turn2)
+            paths.push_back(new_path1);
+        else
+            paths.push_back(new_path2);
     }
     print();
 
@@ -1574,6 +1872,7 @@ void Utilities::grid_routing::Rubin_DFS()
                detour_stack.at((d+2-md)/2).pop();
            }
         }
+        // EXPAND OVER
         for(int m = height -1; m>=0; m--)
            for(int n = 0; n<width; n++ )
            {
@@ -1582,7 +1881,7 @@ void Utilities::grid_routing::Rubin_DFS()
                else
                    std::cout << grid.at(m).at(n)->get_cost()<< " ";
            }
-        
+        // START TO TRACEBACK
         x = sink_x;
         y = sink_y;
                                                        
@@ -1610,6 +1909,10 @@ void Utilities::grid_routing::Rubin_DFS()
 
 
 
+
+
+
+
 void Utilities::grid_routing::Rubin_BFS()
 {
     initialize_map(0,1);
@@ -1619,7 +1922,8 @@ void Utilities::grid_routing::Rubin_BFS()
     for(int i = 0; i < num_paths ; i++)
     {
         vector<std::queue<Node*> > nodes_queue;
-        Path* new_path = new Path();
+        Path* new_path1 = new Path();
+        Path* new_path2 = new Path();
         int source_x = source_sink_connections.at(i).source.x;
         int source_y = source_sink_connections.at(i).source.y;
         int sink_x = source_sink_connections.at(i).sink.x;
@@ -1868,7 +2172,7 @@ void Utilities::grid_routing::Rubin_BFS()
                     std::cout << grid.at(m).at(n)->get_cost()<< " ";
             }
         std::cout << d <<std::endl;
-        
+        /*
         x = sink_x;
         y = sink_y;
         
@@ -1886,219 +2190,308 @@ void Utilities::grid_routing::Rubin_BFS()
                 flag = false;
         }
         paths.push_back(new_path);
-         /*
-        vector<std::stack<Node*> > detour_stack;
-        std::stack<Node*> stack0;
-        detour_stack.push_back(stack0);
-
-        while(flag)
+         */
+        x = sink_x;
+        y = sink_y;
+        
+        int direction_before = 0;
+        int direction_now = 0;
+        int c_turn1 = 0;
+        int c_turn2 = 0;
+        int distance = d;
+        std::cout<< distance <<std::endl;
+        
+        grid.at(y).at(x)->set_cost(d);
+        
+        for(int step = 0; step < distance ; step++)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
         {
-            if(x+1>=0 && x+1<=width -1)
+            bool move = false;    // WHENEVER MAKE A MOVE
+            d = grid.at(y).at(x)->get_cost();
+            if(x+1 >= 0 && x+1 <= width-1)     // RIGHT STEP IS NOT OUT OF RANGE
             {
-                if(grid.at(y).at(x+1)->get_cost()== 0)          // the grid never be waved
+                if(grid.at(y).at(x+1)-> get_cost() == d && abs(y-sink_y)+abs(x+1-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
                 {
-                    if(sink_x >= source_x && x+1 <= sink_x)
-                    {
-                        grid.at(y).at(x+1) -> set_cost(d);
-                        detour_stack.at((d-md)/2).push(grid.at(y).at(x+1));
-                    }
-                    else
-                    {
-                        grid.at(y).at(x+1) -> set_cost(d+2);
-                        if(detour_stack.size()< (d-md)/2 + 2)              // check if the queue store (d+1) is created, if not, create it
-                        {
-                            Node* head = new Node(x, y);
-                            Node* tail = new Node(x+1,y);
-                            Edge* edge = new Edge(head, tail);
-                            grid.at(y).at(x+1) -> add_connection(edge);
-                            
-                            std::stack<Node*> stack;
-                            detour_stack.push_back(stack);
-                            detour_stack.at((d+2-md)/2).push(grid.at(y).at(x+1));
-                        }
-                        else
-                        {
-                            Node* head = new Node(x, y);
-                            Node* tail = new Node(x+1,y);
-                            Edge* edge = new Edge(head, tail);
-                            grid.at(y).at(x+1) -> add_connection(edge);
-                            detour_stack.at((d+2-md)/2).push(grid.at(y).at(x+1));
-                        }
-                    }
-                }
-                if(grid.at(y).at(x+1) ->get_cost() == -3)         // meet source
-                {
-                    Node* head = new Node(x, y);
-                    Node* tail = new Node(x+1,y);
-                    Edge* edge = new Edge(head, tail);
-                    grid.at(y).at(x+1) -> add_connection(edge);
-                    
-                    flag = false;
-                }
-            }
-            if(x-1>=0 && x-1<=width -1)
-            {
-                if(grid.at(y).at(x-1)->get_cost()== 0)          // the grid never be waved
-                {
-                    if(sink_x <= source_x && x-1 >= sink_x)
-                    {
-                        grid.at(y).at(x-1) -> set_cost(d);
-                        detour_stack.at((d-md)/2).push(grid.at(y).at(x-1));
-                        
-                        Node* head = new Node(x, y);
-                        Node* tail = new Node(x-1,y);
-                        Edge* edge = new Edge(head, tail);
-                        grid.at(y).at(x-1) -> add_connection(edge);
-                        
-                    }
-                    else
-                    {
-                        grid.at(y).at(x-1) -> set_cost(d+2);
-                        if(detour_stack.size()< (d-md)/2 + 2)              // check if the queue store (d+1) is created, if not, create it
-                        {
-                            std::stack<Node*> stack;
-                            detour_stack.push_back(stack);
-                            detour_stack.at((d+2-md)/2).push(grid.at(y).at(x-1));
-                            Node* head = new Node(x, y);
-                            Node* tail = new Node(x-1,y);
-                            Edge* edge = new Edge(head, tail);
-                            grid.at(y).at(x-1) -> add_connection(edge);
-                            
-                        }
-                        else
-                        {
-                            detour_stack.at((d+2-md)/2).push(grid.at(y).at(x-1));
-                            Node* head = new Node(x, y);
-                            Node* tail = new Node(x-1,y);
-                            Edge* edge = new Edge(head, tail);
-                            grid.at(y).at(x-1) -> add_connection(edge);
-                        }
-                        
-                        
-                    }
-                }
-                if(grid.at(y).at(x-1)->get_cost() == -3)          // meet source
-                {
-                    Node* head = new Node(x, y);
-                    Node* tail = new Node(x-1,y);
-                    Edge* edge = new Edge(head, tail);
-                    grid.at(y).at(x-1) -> add_connection(edge);
-                    flag = false;
-                }
-            }
-            if(y-1>=0 && y-1<=height -1)
-            {
-                if(grid.at(y-1).at(x)->get_cost()== 0)        // the grid never be waved
-                {
-                    if(sink_y <= source_y && y-1 >= sink_y)
-                    {
-                        grid.at(y-1).at(x) -> set_cost(d);
-                        detour_stack.at((d-md)/2).push(grid.at(y-1).at(x));
-                        Node* head = new Node(x, y);
-                        Node* tail = new Node(x,y-1);
-                        Edge* edge = new Edge(head, tail);
-                        grid.at(y-1).at(x) -> add_connection(edge);
-                    }
-                    else
-                    {
-                        grid.at(y-1).at(x) -> set_cost(d+2);
-                        if(detour_stack.size()< (d-md)/2+2)               // check if the queue store (d+1) is created, if not, create it
-                        {
-                            std::stack<Node*> stack;
-                            detour_stack.push_back(stack);
-                            detour_stack.at((d+2-md)/2).push(grid.at(y-1).at(x));
-                            
-                            Node* head = new Node(x, y);
-                            Node* tail = new Node(x,y-1);
-                            Edge* edge = new Edge(head, tail);
-                            grid.at(y-1).at(x) -> add_connection(edge);
-                            
-                        }
-                        else
-                        {
-                            detour_stack.at((d+2-md)/2).push(grid.at(y-1).at(x));
-                            Node* head = new Node(x, y);
-                            Node* tail = new Node(x,y-1);
-                            Edge* edge = new Edge(head, tail);
-                            grid.at(y-1).at(x) -> add_connection(edge);
-                            
-                        }
-                        
-                    }
-                }
-                if(grid.at(y-1).at(x)->get_cost()== -3)            // meet source
-                {
-                    Node* head = new Node(x, y);
-                    Node* tail = new Node(x,y-1);
-                    Edge* edge = new Edge(head, tail);
-                    grid.at(y-1).at(x) -> add_connection(edge);
-                    flag = false;
+                    Point head(x ,y);
+                    x++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 1;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 1;
                     
                 }
-            }
-            if(y+1>=0 && y+1<=height -1)
-            {
-                if(grid.at(y+1).at(x)->get_cost()== 0)           // the grid never be waved
+                else if(grid.at(y).at(x+1)-> get_cost() == d-2)
                 {
-                    if(sink_y >= source_y && y+1 <= sink_y)
-                    {
-                        grid.at(y+1).at(x) -> set_cost(d);
-                        detour_stack.at((d-md)/2).push(grid.at(y+1).at(x));
-                        Node* head = new Node(x, y);
-                        Node* tail = new Node(x,y+1);
-                        Edge* edge = new Edge(head, tail);
-                        grid.at(y+1).at(x) -> add_connection(edge);
-                        
-                    }
-                    else
-                    {
-                        grid.at(y+1).at(x) -> set_cost(d+2);
-                        if(detour_stack.size()< (d-md)/2+2)              // check if the queue store (d+1) is created, if not, create it
-                        {
-                            std::stack<Node*> stack;
-                            detour_stack.push_back(stack);
-                            detour_stack.at((d+2-md)/2).push(grid.at(y+1).at(x));
-                            Node* head = new Node(x, y);
-                            Node* tail = new Node(x,y+1);
-                            Edge* edge = new Edge(head, tail);
-                            grid.at(y+1).at(x) -> add_connection(edge);
-                            
-                        }
-                        else
-                        {
-                            detour_stack.at((d+2-md)/2).push(grid.at(y+1).at(x));
-                            Node* head = new Node(x, y);
-                            Node* tail = new Node(x,y+1);
-                            Edge* edge = new Edge(head, tail);
-                            grid.at(y+1).at(x) -> add_connection(edge);
-                        }
-                    }
+                    Point head(x ,y);
+                    x++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 1;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 1;
                 }
-                if(grid.at(y+1).at(x)->get_cost()== -3)          // meet source
+                else
+                    move = false;
+                
+            }
+            
+            if(x-1 >= 0 && x-1 <= width-1 && !move)     // LEFT STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y).at(x-1)-> get_cost() == d && abs(y-sink_y)+abs(x-1-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
                 {
-                    Node* head = new Node(x, y);
-                    Node* tail = new Node(x,y+1);
-                    Edge* edge = new Edge(head, tail);
-                    grid.at(y+1).at(x) -> add_connection(edge);
-                    flag = false;
+                    Point head(x ,y);
+                    x--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 2;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 2;
                 }
+                else if(grid.at(y).at(x-1)-> get_cost() == d-2)
+                {
+                    Point head(x ,y);
+                    x--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 2;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 2;
+                }
+                else
+                    move = false;
+                
             }
-            if(!detour_stack.at((d-md)/2).empty())  //if the queue store current detour value isn't empty, means the four nodes around has same detour, we can wave it
+            
+            if(y+1 >= 0 && y+1 <= height-1 && !move)     // UP STEP IS NOT OUT OF RANGE
             {
-                x = detour_stack.at((d-md)/2).top() -> get_x();
-                y = detour_stack.at((d-md)/2).top() -> get_y();
-                detour_stack.at((d-md)/2).pop();
+                if(grid.at(y+1).at(x)-> get_cost() == d && abs(y+1-sink_y)+abs(x-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 3;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 3;
+                    
+                }
+                else if(grid.at(y+1).at(x)-> get_cost() == d-2)
+                {
+                    Point head(x ,y);
+                    y++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 3;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 3;
+                    
+                }
+                else
+                    move = false;
+                
             }
-            else
+            
+            if(y-1 >= 0 && y-1 <= height-1 && !move)     // DOWN STEP IS NOT OUT OF RANGE
             {
-                x = detour_stack.at((d+2-md)/2).top() -> get_x();
-                y = detour_stack.at((d+2-md)/2).top() -> get_y();
-                detour_stack.at((d+2-md)/2).pop();
+                if(grid.at(y-1).at(x)-> get_cost() == d && abs(y-1-sink_y)+abs(x-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 4;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 4;
+                }
+                else if(grid.at(y-1).at(x)-> get_cost() == d-2)
+                {
+                    Point head(x ,y);
+                    y--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path1 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 4;
+                    if(direction_before!=direction_now)
+                        c_turn1 ++;
+                    direction_before = 4;
+                    
+                }
+                else
+                    move = false;
+                
             }
         }
-          */
         
         
+        x = sink_x;
+        y = sink_y;
+        for(int step = 0; step < distance ; step++)     // MOVE TO SOURCE IN THE DECREASING ORDER OF DISTANCE
+        {
+            bool move = false;    // WHENEVER MAKE A MOVE
+            d = grid.at(y).at(x)->get_cost();
+            if(y-1 >= 0 && y-1 <= height-1 && !move)     // DOWN STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y-1).at(x)-> get_cost() == d && abs(y-1-sink_y)+abs(x-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 4;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 4;
+                }
+                else if(grid.at(y-1).at(x)-> get_cost() == d-2)
+                {
+                    Point head(x ,y);
+                    y--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 4;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 4;
+                    
+                }
+                else
+                    move = false;
+                
+            }
+            if(y+1 >= 0 && y+1 <= height-1 && !move)     // UP STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y+1).at(x)-> get_cost() == d && abs(y+1-sink_y)+abs(x-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    y++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 3;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 3;
+                    
+                }
+                else if(grid.at(y+1).at(x)-> get_cost() == d-2)
+                {
+                    Point head(x ,y);
+                    y++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 3;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 3;
+                    
+                }
+                else
+                    move = false;
+                
+            }
+            if(x-1 >= 0 && x-1 <= width-1 && !move)     // LEFT STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y).at(x-1)-> get_cost() == d && abs(y-sink_y)+abs(x-1-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    x--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 2;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 2;
+                }
+                else if(grid.at(y).at(x-1)-> get_cost() == d-2)
+                {
+                    Point head(x ,y);
+                    x--;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 2;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 2;
+                }
+                else
+                    move = false;
+                
+            }
+            if(x+1 >= 0 && x+1 <= width-1)     // RIGHT STEP IS NOT OUT OF RANGE
+            {
+                if(grid.at(y).at(x+1)-> get_cost() == d && abs(y-sink_y)+abs(x+1-sink_x) == step+1)    // COST OF THIS STEP DECREASE BY 1
+                {
+                    Point head(x ,y);
+                    x++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 1;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 1;
+                    
+                }
+                else if(grid.at(y).at(x+1)-> get_cost() == d-2)
+                {
+                    Point head(x ,y);
+                    x++;
+                    Point tail(x ,y);
+                    move = true;     // AVOID FURTHER MOVE IN THE SAME STEP
+                    PathSegment* path_segment = new PathSegment(head, tail);
+                    new_path2 -> add_segment(path_segment);      // ADD CURRENT MOVE TO NEW PATH
+                    direction_now = 1;
+                    if(direction_before!=direction_now)
+                        c_turn2 ++;
+                    direction_before = 1;
+                }
+                else
+                    move = false;
+                
+            }
+            
+        }
+        std::cout << "c_turn1 "<<c_turn1<<std::endl;
+        std::cout << "c_turn2 "<<c_turn2<<std::endl;
+        if(c_turn1 < c_turn2)
+            paths.push_back(new_path1);
+        else
+            paths.push_back(new_path2);
+
     }
     print();
 }

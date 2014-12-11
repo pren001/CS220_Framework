@@ -11,6 +11,6 @@
 	],
 
 	"routeList": [
-	{"name": "route1", "source_x": 6, "source_y": 10, "sink_x": 1, "sink_y": 8}
+	{"name": "route1", "source_x": 6, "source_y": 10, "sink_x": 4, "sink_y": 4}
 	]
 }
