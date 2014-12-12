@@ -1,5 +1,37 @@
-CS220 Project Framework
+CS220 Project Framework Grid Routing
 ===============
+
+Group Members: Ping Ren, Yi Zhu
+
+We have finished all required algorithms, including both no intersections and unlimited intersections versions. The code can be run as:
+
+./grid_router Tests/test_sample.json [int] [bool]
+
+where
+[int] represents different algorithm:
+
+    1: Lee's algorithm
+    2: Lee 3-bit Encoding
+    3: Lee 2-bit Encoding
+    4: Ruben's algorithm with minimized number of turns in each path
+    5: Ruben's algorithm with path-cost function (most recently added node)
+    //6: Korn's algorithm with weighted (overpull) path-cost function (Implemented separately from other algorithms however cannot work together when combined for unknown reason)
+    7: Hadlock's algorithm
+
+*** For Korn's algorithm, we implemented with another system. Will send you later by email.
+
+[bool] represent two different versions
+    0: unlimited intersections between routed nets
+    1: no intersection between routed nets
+
+[double] represents overpull for Korn's algorithm
+
+e.g.:
+
+    ./grid_router Tests/test_sample.json 1 0
+will run Lee's algorithm with unlimited intersections between routed nets
+
+
 
 ## Project Overview
 
@@ -44,4 +76,7 @@ For your submission, you must have a repository updated with the code you wish t
 - Your README.md must at minimum have the name(s) of your group members (and hopefully more useful information)
 
 In addition to this, you **must email me with a link to your repsitory**. There are currently many repositories existing, and I have no idea who most of them belong to. **In order to have a private repository you must have a student developer pack**. You [get the student developer pack here](https://education.github.com/pack), and it comes with alot of other cool stuff. If you do not have the pack, and therefore cannot make your repository private, before the deadline for your proejct, do not worry. Continue to update your repository and make it private as soon as you can.
+
+
+
 
