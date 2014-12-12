@@ -38,32 +38,31 @@ int main(int argc,char* argv[]) {
 	Netlist: a series of stright line segments, with a single source and more than one sink
 	*/
 	
-	
-	//g.Lee_algorithm();
-	//g.Two_bits();
-	//g.Three_bits();
-	//g.Rubin1();
-	//g.Hadlock();
     
     int n = atoi(argv[2]);
+    bool m;
+    if(atoi(argv[3])==0)
+		m = false;
+    else if(atoi(argv[3])== 1)
+		m = true;
     switch(n){
-        case 0:
-            g.Lee();     
-            break;
         case 1:
-            g.Three_bits();      
+            g.Lee(m);     
             break;
         case 2:
-            g.Two_bits();       
+            g.Three_bits(m);      
             break;
-	case 3:
-            g.Rubin_DFS();
-	    break;
+        case 3:
+            g.Two_bits(m);       
+            break;
 	case 4:
-            g.Rubin_BFS();
+            g.Rubin_DFS(m);
 	    break;
-        case 5:
-            g.Hadlock();
+	case 5:
+            g.Rubin_BFS(m);
+	    break;
+	case 7:
+	    g.Hadlock(m);
         
     }
     

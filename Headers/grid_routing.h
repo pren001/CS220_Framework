@@ -1,3 +1,8 @@
+/* Filename: grid_routing.h
+ * Auther: Ping Ren
+ * Date: 12.10.2014
+ * Description: grid_routing is a class inherited form class Grid
+ */
 #ifndef _GRID_ROUTING_H_
 #define _GRID_ROUTING_H_
 
@@ -22,6 +27,8 @@ namespace Utilities{
             vector<Path*> paths;
 	
             void print();
+            void set_path_block(int i,int block_cost,bool set);
+	    void reset_map(int node_initial_cost,int block_cost);
             
             
         public:
@@ -29,25 +36,24 @@ namespace Utilities{
             grid_routing(ProblemObject* problem_object);
             ~grid_routing();
             
-            void initialize_map(int node_initial_cost, int block_cost);
+            void initialize_map(int node_cost, int block_cost);
             
               
-            void Lee();   /*unlimited intersections*/
+            void Lee(bool set);   
             
-            void Two_bits();    /*unlimited intersections*/
+            void Two_bits(bool set);    
             
-            void Three_bits();    /*unlimited intersections*/
-            
-            
-            void Rubin_DFS();   /*unlimited intersections*/
-	    void Rubin_BFS();
+            void Three_bits(bool set);    
             
             
-            //void Korn_algorithm1();    /*no intersections*/
-            //void Korn_algorithm2();    /*unlimited intersections*/
+            void Rubin_DFS(bool set);   
+	    void Rubin_BFS(bool set);
             
-            void Hadlock();   /*no intersections*/
-            //void Hadlock_algorithm2();   /*unlimited intersections*/
+            
+            //void Korn(bool set, double overpull);    
+            
+            void Hadlock(bool set);   
+            
 
 	    
     };
