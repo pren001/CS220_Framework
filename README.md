@@ -3,7 +3,7 @@ CS220 Project Framework Grid Routing
 
 Group Members: Ping Ren, Yi Zhu
 
-We have finished all required algorithms, including both no intersections and unlimited intersections versions. The code can be run as:
+We have finished all required algorithms, including both no intersections and unlimited intersections versions. And the backtracing is already turns minimized in its path. The code can be run as:
 
 ./grid_router Tests/test_sample.json [int] [bool]
 
